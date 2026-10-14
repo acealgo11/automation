@@ -1,0 +1,931 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>X Automation — Automated FX Execution</title>
+<meta name="description" content="X Automation connects rules-based trading software to your own broker account and executes 24/5. No charts, no emotion, no guesswork.">
+<meta name="theme-color" content="#000000">
+<meta property="og:title" content="X Automation — Automated FX Execution">
+<meta property="og:description" content="Rules-based trading software that runs on your own broker account, 24 hours a day, 5 days a week.">
+<meta property="og:type" content="website">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 viewBox=%270 0 32 32%27%3E%3Crect width=%2732%27 height=%2732%27 rx=%277%27/%3E%3Cg fill=%27%23fafafa%27 transform=%27translate(4 4)%27%3E%3Cpolygon points=%271.5,2 5,2 10.5,12 5,22 1.5,22 7,12%27/%3E%3Cpolygon points=%2722.5,2 19,2 13.5,12 19,22 22.5,22 17,12%27/%3E%3Crect x=%2711.25%27 y=%2711.25%27 width=%271.5%27 height=%271.5%27/%3E%3C/g%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400..600&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://fast.wistia.com">
+<link rel="preconnect" href="https://api.leadconnectorhq.com">
+
+<!-- ===== VSL: Wistia ===== -->
+<script src="https://fast.wistia.com/player.js" async></script>
+<script src="https://fast.wistia.com/embed/vfcmtx6vb6.js" async type="module"></script>
+
+<style>
+:root{
+  --bg:#000;
+  --bg-1:#070707;
+  --bg-2:#0d0d0d;
+  --line:rgba(255,255,255,.08);
+  --line-2:rgba(255,255,255,.16);
+  --fg:#fafafa;
+  --fg-2:#a3a3a3;
+  --fg-3:#6b6b6b;
+  --accent:#ffb020;
+  --accent-glow:rgba(255,176,32,.55);
+  --sans:"Geist","Helvetica Neue",Arial,sans-serif;
+  --mono:"Geist Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  --max:1160px;
+  --gut:clamp(16px,4vw,32px);
+  --ease:cubic-bezier(.2,.7,.2,1);
+}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+img,svg{display:block}
+a{color:inherit;text-decoration:none}
+::selection{background:var(--accent);color:#000}
+
+.wrap{max-width:var(--max);margin:0 auto;padding:0 var(--gut)}
+.mono{font-family:var(--mono)}
+.dim{color:var(--fg-3)}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-2);display:inline-flex;align-items:center;gap:10px}
+.eyebrow::before{content:"";width:6px;height:6px;background:var(--accent);display:inline-block}
+
+h1,h2,h3{font-weight:500;margin:0;letter-spacing:-.03em;line-height:1.05}
+h1{font-size:clamp(38px,6.6vw,78px)}
+h2{font-size:clamp(32px,4.6vw,56px);letter-spacing:-.028em}
+h3{font-size:20px;letter-spacing:-.01em;line-height:1.25}
+p{margin:0;color:var(--fg-2)}
+.lede{font-size:clamp(17px,1.6vw,19px);line-height:1.6;max-width:640px}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 26px;border-radius:999px;font-weight:500;font-size:15px;letter-spacing:-.005em;transition:transform .2s var(--ease),background .2s,color .2s,border-color .2s;cursor:pointer;border:1px solid transparent;white-space:nowrap}
+.btn-primary{background:var(--fg);color:#000}
+.btn-primary:hover{transform:translateY(-1px);background:#fff}
+.btn-ghost{border-color:var(--line-2);color:var(--fg)}
+.btn-ghost:hover{border-color:var(--fg)}
+.btn .arr{font-family:var(--mono);transition:transform .2s var(--ease)}
+.btn:hover .arr{transform:translateY(2px)}
+
+/* ---------- Frame with crosshair corners ---------- */
+.frame{position:relative;border:1px solid var(--line-2);background:var(--bg-1)}
+.frame::before,.frame::after,.frame>.c1,.frame>.c2{content:"";position:absolute;width:14px;height:14px;border-color:var(--fg);border-style:solid;pointer-events:none;z-index:2}
+.frame::before{top:-1px;left:-1px;border-width:1px 0 0 1px}
+.frame::after{top:-1px;right:-1px;border-width:1px 1px 0 0}
+.frame>.c1{bottom:-1px;left:-1px;border-width:0 0 1px 1px}
+.frame>.c2{bottom:-1px;right:-1px;border-width:0 1px 1px 0}
+.frame-bar{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:10px 14px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
+.frame-bar .live{display:inline-flex;align-items:center;gap:8px;color:var(--fg-2)}
+.dot{position:relative;display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent-glow);flex:none;animation:breathe 1.8s ease-in-out infinite}
+.dot::before,.dot::after{content:"";position:absolute;inset:0;border-radius:50%;border:1px solid var(--accent);animation:ripple 1.8s cubic-bezier(.2,.6,.3,1) infinite}
+.dot::after{animation-delay:.9s}
+@keyframes ripple{0%{transform:scale(1);opacity:.9}100%{transform:scale(3.6);opacity:0}}
+@keyframes breathe{0%,100%{opacity:1}50%{opacity:.65}}
+.closed .dot{background:var(--fg-3);box-shadow:none;animation:none}
+.closed .dot::before,.closed .dot::after{display:none}
+
+/* ---------- Top bar ---------- */
+.top{position:absolute;top:0;left:0;right:0;z-index:20}
+.top .wrap{display:flex;justify-content:space-between;align-items:center;height:76px}
+.logo{display:inline-flex;align-items:center;gap:12px}
+.logo svg{width:22px;height:22px}
+.logo .sig{fill:var(--accent);animation:blink 2.4s steps(1) infinite}
+@keyframes blink{0%,70%{opacity:1}71%,100%{opacity:.15}}
+.logo .word{font-weight:500;font-size:14px;letter-spacing:.24em}
+.status{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-2);display:flex;align-items:center;gap:14px}
+.status .sep{width:1px;height:12px;background:var(--line-2)}
+
+/* ---------- Hero ---------- */
+.hero{position:relative;padding:128px 0 40px;overflow:hidden;isolation:isolate}
+.hero-bg{position:absolute;inset:0;z-index:-1;pointer-events:none}
+.grid{position:absolute;inset:-1px;background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);background-size:64px 64px;-webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%);mask-image:radial-gradient(ellipse 70% 60% at 50% 30%,#000 30%,transparent 75%)}
+.scan{position:absolute;left:0;right:0;height:220px;top:-220px;background:linear-gradient(180deg,transparent,rgba(255,255,255,.035) 70%,rgba(255,255,255,.06) 92%,transparent);-webkit-mask-image:radial-gradient(ellipse 60% 100% at 50% 50%,#000 30%,transparent 80%);mask-image:radial-gradient(ellipse 60% 100% at 50% 50%,#000 30%,transparent 80%);animation:scan 8s linear infinite}
+@keyframes scan{to{transform:translateY(1200px)}}
+#field{position:absolute;inset:0;width:100%;height:100%;opacity:.55}
+.glow{position:absolute;left:50%;top:-30%;width:900px;height:600px;transform:translateX(-50%);background:radial-gradient(closest-side,rgba(255,255,255,.09),transparent);filter:blur(10px)}
+
+.hero-head{text-align:center;max-width:920px;margin:0 auto}
+.hero-head .eyebrow{margin-bottom:28px}
+.hero-head h1 .dim{display:block}
+.hero-head .lede{margin:26px auto 0}
+
+.vsl{max-width:960px;margin:40px auto 0}
+.vsl-inner{padding:0}
+wistia-player[media-id='vfcmtx6vb6']:not(:defined){background:center / contain no-repeat url('https://fast.wistia.com/embed/medias/vfcmtx6vb6/swatch');display:block;filter:blur(5px);padding-top:56.25%}
+.vsl-note{display:flex;justify-content:center;gap:28px;flex-wrap:wrap;margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-3)}
+.vsl-note span{display:inline-flex;align-items:center;gap:8px}
+.vsl-note span::before{content:"";width:4px;height:4px;background:var(--fg-2)}
+
+/* ---------- Apply ---------- */
+.apply{padding:40px 0 90px;scroll-margin-top:20px}
+.apply-head{text-align:center;max-width:700px;margin:0 auto 34px}
+.apply-head h2{font-size:clamp(28px,3.6vw,42px)}
+.apply-head p{margin-top:14px}
+.step-tag{display:inline-flex;gap:8px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-2);border:1px solid var(--line-2);border-radius:999px;padding:6px 12px;margin-bottom:18px}
+.form-frame{max-width:960px;margin:0 auto}
+.form-body{background:#fff;min-height:620px}
+.form-body iframe{display:block;width:100%;min-height:620px}
+.trust{max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);border:1px solid var(--line);border-top:0}
+.trust div{padding:16px 14px;font-family:var(--mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--fg-2);display:flex;gap:10px;align-items:center;border-left:1px solid var(--line)}
+.trust div:first-child{border-left:0}
+.trust svg{width:14px;height:14px;flex:none}
+
+/* ---------- Marquee ---------- */
+.marquee{border-top:1px solid var(--line);border-bottom:1px solid var(--line);overflow:hidden;padding:18px 0;-webkit-mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent);mask-image:linear-gradient(90deg,transparent,#000 10%,#000 90%,transparent)}
+.marquee-track{display:flex;width:max-content;animation:marq 40s linear infinite}
+.marquee-track span{font-family:var(--mono);font-size:13px;letter-spacing:.16em;text-transform:uppercase;color:var(--fg-2);padding:0 28px;display:inline-flex;align-items:center;gap:28px;white-space:nowrap}
+.marquee-track span::after{content:"";width:5px;height:5px;background:var(--accent);opacity:.8}
+@keyframes marq{to{transform:translateX(-50%)}}
+
+/* ---------- Sections ---------- */
+section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--line);position:relative}
+.sec-head{max-width:760px;margin-bottom:56px}
+.sec-head .eyebrow{margin-bottom:22px}
+.sec-head p{margin-top:20px}
+.sec-head.center{text-align:center;margin-left:auto;margin-right:auto}
+
+.split{display:grid;grid-template-columns:1fr 1fr;gap:clamp(32px,6vw,80px);align-items:start}
+
+/* Problem stats */
+.stats{display:grid;grid-template-columns:repeat(3,1fr);border:1px solid var(--line);margin-top:40px}
+.stat{padding:26px 22px;border-left:1px solid var(--line)}
+.stat:first-child{border-left:0}
+.stat .n{font-size:clamp(36px,4.4vw,52px);font-weight:500;letter-spacing:-.04em;line-height:1}
+.stat .l{font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);margin-top:12px}
+
+/* Comparison table */
+.vs{width:100%;border-collapse:collapse;font-size:15px}
+.vs th,.vs td{padding:16px 14px;border-bottom:1px solid var(--line);text-align:left}
+.vs th{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3);font-weight:400}
+.vs td:first-child{color:var(--fg-2)}
+.vs td:nth-child(2){color:var(--fg-3)}
+.vs td:nth-child(3){color:var(--fg);font-weight:500}
+.vs th:nth-child(3){color:var(--fg)}
+.vs .x{font-family:var(--mono);display:inline-flex;align-items:center;gap:8px}
+.vs .x::before{content:"";width:6px;height:6px;border:1px solid currentColor}
+.vs td:nth-child(3) .x::before{background:var(--accent);border-color:var(--accent)}
+
+/* Pipeline (education) */
+.pipe{display:grid;grid-template-columns:1fr auto 1fr auto 1fr;align-items:stretch;gap:0;margin-bottom:56px}
+.pipe-node{border:1px solid var(--line-2);padding:24px;background:var(--bg-1)}
+.pipe-node .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--fg-3);text-transform:uppercase}
+.pipe-node h3{margin:14px 0 8px}
+.pipe-node p{font-size:14.5px}
+.pipe-link{width:64px;position:relative;align-self:center;height:1px;background:var(--line-2);overflow:hidden}
+.pipe-link::after{content:"";position:absolute;top:0;left:-30%;width:30%;height:1px;background:linear-gradient(90deg,transparent,#fff);animation:flow 1.8s linear infinite}
+@keyframes flow{to{left:100%}}
+
+.cards{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.card{background:var(--bg);padding:30px 26px 32px}
+.card .idx{font-family:var(--mono);font-size:11px;color:var(--fg-3);letter-spacing:.14em}
+.card h3{margin:18px 0 10px}
+.card p{font-size:15px}
+
+.not{margin-top:40px;border:1px dashed var(--line-2);padding:24px 26px;display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:start}
+.not .tag{font-family:var(--mono);font-size:11px;letter-spacing:.14em;text-transform:uppercase;border:1px solid var(--fg);padding:5px 10px}
+.not ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+.not li{font-size:15px;color:var(--fg-2)}
+.not li strong{color:var(--fg);font-weight:500;display:block;margin-bottom:4px}
+
+/* Engine */
+.engine{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
+.eng{display:flex;flex-direction:column}
+.eng .viz{height:230px;border-bottom:1px solid var(--line);position:relative;overflow:hidden}
+.eng .txt{padding:24px 22px 28px}
+.eng .txt .k{font-family:var(--mono);font-size:11px;letter-spacing:.14em;color:var(--fg-3);text-transform:uppercase}
+.eng .txt h3{margin:12px 0 10px}
+.eng .txt p{font-size:15px}
+
+.meter{padding:18px 18px 10px;display:grid;gap:7px}
+.meter-row{display:grid;grid-template-columns:34px 1fr 30px;gap:10px;align-items:center;font-family:var(--mono);font-size:10.5px;color:var(--fg-2)}
+.meter-bar{height:8px;background:rgba(255,255,255,.06);position:relative}
+.meter-bar i{position:absolute;left:0;top:0;bottom:0;background:var(--fg);transition:width 1.6s var(--ease)}
+.meter-row .v{text-align:right;color:var(--fg-3)}
+.viz-cap{position:absolute;left:18px;right:18px;bottom:10px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--fg-3)}
+
+.ladder{position:absolute;inset:22px 22px 34px;display:flex;align-items:flex-end;gap:8px}
+.ladder i{flex:1;background:linear-gradient(180deg,#fff,rgba(255,255,255,.25));transform-origin:bottom;transform:scaleY(.05);transition:transform 1s var(--ease)}
+.eng.in .ladder i{transform:scaleY(1)}
+.ladder .eq{position:absolute;left:0;right:0;border-top:1px dashed var(--fg-2)}
+.ladder .eq span{position:absolute;right:0;top:-18px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--fg-2)}
+
+.log{position:absolute;inset:0;padding:18px;font-family:var(--mono);font-size:11.5px;line-height:1.9;color:var(--fg-2);overflow:hidden}
+.log .ok{color:var(--accent)}
+.log .cur{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+
+/* Steps / tabs */
+.tabs{display:grid;grid-template-columns:280px 1fr;border:1px solid var(--line-2)}
+.tab-list{border-right:1px solid var(--line);display:flex;flex-direction:column}
+.tab-btn{appearance:none;background:none;border:0;border-bottom:1px solid var(--line);color:var(--fg-3);font:inherit;text-align:left;padding:22px 22px;cursor:pointer;display:flex;gap:16px;align-items:center;position:relative;transition:color .2s,background .2s}
+.tab-btn:last-child{border-bottom:0}
+.tab-btn .num{font-family:var(--mono);font-size:12px;letter-spacing:.1em}
+.tab-btn .nm{font-size:17px;font-weight:500;letter-spacing:-.01em}
+.tab-btn[aria-selected="true"]{color:var(--fg);background:var(--bg-2)}
+.tab-btn[aria-selected="true"] .num{color:var(--accent)}
+.tab-btn .prog{position:absolute;left:0;bottom:-1px;height:1px;background:var(--accent);width:0}
+.tab-btn[aria-selected="true"] .prog{animation:prog 6s linear forwards}
+.tabs.manual .prog{display:none}
+@keyframes prog{to{width:100%}}
+.tab-panel{padding:clamp(26px,4vw,48px);display:none}
+.tab-panel.on{display:block;animation:fadeup .5s var(--ease)}
+.tab-panel h3{font-size:clamp(24px,2.6vw,32px);letter-spacing:-.02em;margin-bottom:14px}
+.tab-panel p{max-width:560px}
+.specs{display:grid;grid-template-columns:repeat(3,1fr);margin-top:34px;border-top:1px solid var(--line)}
+.specs div{padding:18px 0 0}
+.specs .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)}
+.specs .v{font-size:20px;font-weight:500;margin-top:6px;letter-spacing:-.01em}
+@keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
+
+/* Results */
+.placeholder-flag{display:inline-flex;gap:8px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#000;background:var(--fg);padding:6px 10px;margin-bottom:22px}
+.results{display:grid;grid-template-columns:1.6fr 1fr;gap:20px}
+.chart{padding:0}
+.chart{display:flex;flex-direction:column}
+.chart-body{padding:22px 22px 14px;position:relative;flex:1;display:flex;align-items:center}
+.chart svg{width:100%;height:auto}
+.chart .ln{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 2.4s var(--ease)}
+.chart.in .ln{stroke-dashoffset:0}
+.chart .area{opacity:0;transition:opacity 1.2s .9s}
+.chart.in .area{opacity:1}
+.chart .gl{stroke:var(--line);stroke-width:1}
+.chart .ax{font-family:var(--mono);font-size:10px;fill:var(--fg-3);letter-spacing:.08em}
+.rstats{display:grid;gap:20px}
+.rstat{padding:22px}
+.rstat .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
+.rstat .v{font-size:40px;font-weight:500;letter-spacing:-.04em;line-height:1;margin-top:12px}
+.rstat p{font-size:13.5px;margin-top:10px}
+.verify{display:inline-flex;margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--fg-2);padding-bottom:3px}
+.dd-note{margin-top:20px;font-size:14px;max-width:780px}
+
+/* Testimonials carousel */
+.tcar{display:grid;gap:18px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.trow{overflow:hidden}
+.ttrack{display:flex;gap:18px;width:max-content;animation:tl 60s linear infinite}
+.trow.rev .ttrack{animation-name:tr}
+.tcar:hover .ttrack{animation-play-state:paused}
+@keyframes tl{to{transform:translateX(calc(-50% - 9px))}}
+@keyframes tr{from{transform:translateX(calc(-50% - 9px))}to{transform:translateX(0)}}
+.tcard{flex:none;width:320px;margin:0;cursor:zoom-in;background:var(--bg-1);border:1px solid var(--line-2);position:relative;transition:border-color .25s}
+.tcard:hover{border-color:var(--accent)}
+.tcard .img{aspect-ratio:1/1.11;overflow:hidden;background:#0a0a0a}
+.tcard img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+.tcard figcaption{display:flex;justify-content:space-between;align-items:center;padding:12px 14px;border-top:1px solid var(--line);font-size:14px;font-weight:500}
+.tcard figcaption span{font-family:var(--mono);font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);font-weight:400}
+.lb{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.92);display:none;place-items:center;padding:24px;cursor:zoom-out;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.lb.on{display:grid}
+.lb img{max-width:min(92vw,900px);max-height:86vh;object-fit:contain;border:1px solid var(--line-2)}
+.lb .x{position:absolute;top:18px;right:22px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--fg-2)}
+@media (max-width:640px){.tcard{width:250px}.ttrack{animation-duration:45s}}
+
+/* Fit */
+.fit{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.fit .frame{padding:30px 28px}
+.fit h3{display:flex;align-items:center;gap:12px;margin-bottom:22px}
+.fit ul{list-style:none;margin:0;padding:0;display:grid;gap:14px}
+.fit li{display:grid;grid-template-columns:22px 1fr;gap:10px;color:var(--fg-2);font-size:15.5px}
+.fit li::before{font-family:var(--mono);font-size:13px;color:var(--accent);padding-top:1px}
+.fit .yes li::before{content:"[+]"}
+.fit .no li::before{content:"[–]";color:var(--fg-3)}
+.fit .no{background:transparent;border-style:dashed}
+
+/* Transparency */
+.paid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
+.paid .card .big{font-size:56px;font-weight:500;letter-spacing:-.05em;line-height:1;margin-top:10px}
+
+/* Team */
+.team{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.member{display:grid;grid-template-columns:140px 1fr;gap:0}
+.member .pic{border-right:1px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:26px;color:var(--fg-3);background:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 4px);min-height:180px}
+.member .bio{padding:24px}
+.member .role{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3);margin-top:6px}
+.member p{font-size:14.5px;margin-top:14px}
+
+/* FAQ */
+.faq{max-width:860px;margin:0 auto;border-top:1px solid var(--line)}
+.faq details{border-bottom:1px solid var(--line)}
+.faq summary{list-style:none;cursor:pointer;padding:24px 0;display:flex;justify-content:space-between;gap:20px;font-size:18px;font-weight:500;letter-spacing:-.01em}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary .pm{font-family:var(--mono);color:var(--fg-3);transition:transform .25s var(--ease);flex:none}
+.faq details[open] summary .pm{transform:rotate(45deg);color:var(--fg)}
+.faq .ans{padding:0 40px 26px 0;color:var(--fg-2)}
+
+/* Final CTA */
+.final{padding:clamp(100px,14vw,170px) 0;text-align:center;position:relative;overflow:hidden;border-bottom:1px solid var(--line)}
+.final .grid{-webkit-mask-image:radial-gradient(ellipse 60% 70% at 50% 50%,#000 20%,transparent 70%);mask-image:radial-gradient(ellipse 60% 70% at 50% 50%,#000 20%,transparent 70%)}
+.final h2{font-size:clamp(38px,6vw,76px);position:relative}
+.final p{margin:22px auto 36px;max-width:520px;position:relative}
+.final .btn{position:relative}
+
+/* Footer */
+footer{padding:56px 0 110px}
+.foot-top{display:flex;justify-content:space-between;align-items:center;gap:20px;flex-wrap:wrap;padding-bottom:28px;border-bottom:1px solid var(--line)}
+.foot-links{display:flex;gap:22px;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
+.foot-links a:hover{color:var(--fg)}
+.risk{margin-top:28px;font-size:12.5px;line-height:1.7;color:var(--fg-3);max-width:980px}
+.risk strong{color:var(--fg-2);font-weight:500}
+.copy{margin-top:22px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--fg-3)}
+
+/* Sticky mobile CTA */
+.sticky{position:fixed;left:12px;right:12px;bottom:12px;z-index:50;display:none;transform:translateY(140%);transition:transform .35s var(--ease)}
+.sticky.show{transform:none}
+.sticky a{display:flex;justify-content:space-between;align-items:center;background:var(--fg);color:#000;border-radius:999px;height:56px;padding:0 10px 0 24px;font-weight:500;box-shadow:0 10px 40px rgba(0,0,0,.6)}
+.sticky a span:last-child{width:38px;height:38px;border-radius:50%;background:#000;color:#fff;display:grid;place-items:center;font-family:var(--mono)}
+
+/* Reveal */
+.rv{opacity:0;transform:translateY(18px);transition:opacity .8s var(--ease),transform .8s var(--ease)}
+.rv.in{opacity:1;transform:none}
+.rv.d1{transition-delay:.08s}.rv.d2{transition-delay:.16s}.rv.d3{transition-delay:.24s}
+
+/* Responsive */
+@media (max-width:980px){
+  .split,.results{grid-template-columns:1fr}
+  .engine,.cards,.paid{grid-template-columns:1fr}
+  .pipe{grid-template-columns:1fr}
+  .pipe-link{width:1px;height:36px;justify-self:center}
+  .pipe-link::after{width:1px;height:30%;left:0;top:-30%;background:linear-gradient(180deg,transparent,#fff);animation:flowv 1.8s linear infinite}
+  .not{grid-template-columns:1fr}
+  .not ul{grid-template-columns:1fr}
+  .tabs{grid-template-columns:1fr}
+  .tab-list{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
+  .tab-btn{border-bottom:0;border-right:1px solid var(--line);flex:1 0 auto;padding:16px 18px}
+  .tab-btn .nm{font-size:15px}
+  .fit,.team{grid-template-columns:1fr}
+  .trust{grid-template-columns:1fr 1fr}
+  .trust div:nth-child(3){border-left:0}
+  .trust div:nth-child(n+3){border-top:1px solid var(--line)}
+}
+@keyframes flowv{to{top:100%}}
+@media (max-width:640px){
+  .status .hide-s{display:none}
+  .status .sep{display:none}
+  .hero{padding-top:100px}
+  .hero-head .eyebrow{margin-bottom:20px;font-size:11px}
+  .hero-head .lede{font-size:16px;margin-top:18px}
+  .hide-m{display:none}
+  .vsl{margin-top:28px}
+  .stats{grid-template-columns:1fr}
+  .stat{border-left:0;border-top:1px solid var(--line)}
+  .stat:first-child{border-top:0}
+  .specs{grid-template-columns:1fr 1fr;gap:4px 16px}
+  .member{grid-template-columns:96px 1fr}
+  .vs{font-size:14px}
+  .vs th,.vs td{padding:13px 8px}
+  .sticky{display:block}
+  .vsl-note{gap:14px 20px}
+  .form-body,.form-body iframe{min-height:700px}
+}
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .rv{opacity:1;transform:none}
+  html{scroll-behavior:auto}
+}
+</style>
+</head>
+<body>
+
+<!-- ===================== TOP BAR ===================== -->
+<header class="top">
+  <div class="wrap">
+    <a href="#top" class="logo" aria-label="X Automation">
+      <svg viewBox="0 0 24 24" fill="#fafafa" aria-hidden="true">
+        <polygon points="1.5,2 5,2 10.5,12 5,22 1.5,22 7,12"/>
+        <polygon points="22.5,2 19,2 13.5,12 19,22 22.5,22 17,12"/>
+        <rect class="sig" x="11.25" y="11.25" width="1.5" height="1.5"/>
+      </svg>
+      <span class="word">AUTOMATION</span>
+    </a>
+    <div class="status" aria-live="polite">
+      <span class="live" id="mktwrap" style="display:inline-flex;align-items:center;gap:10px"><i class="dot"></i><span id="mkt">FX MARKET</span></span>
+      <span class="sep hide-s"></span>
+      <span class="hide-s" id="sess">—</span>
+      <span class="sep hide-s"></span>
+      <span class="hide-s" id="clock">--:--:-- UTC</span>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ===================== HERO + VSL ===================== -->
+<section class="hero">
+  <div class="hero-bg" aria-hidden="true">
+    <div class="glow"></div>
+    <canvas id="field"></canvas>
+    <div class="grid"></div>
+    <div class="scan"></div>
+  </div>
+
+  <div class="wrap">
+    <div class="hero-head">
+      <!-- EDIT: eyebrow -->
+      <div class="eyebrow rv">Automated FX execution software</div>
+      <!-- EDIT: headline -->
+      <h1 class="rv d1">The market never sleeps.<span class="dim">Neither does the system.</span></h1>
+      <!-- EDIT: subheadline -->
+      <p class="lede rv d2">X Automation connects rules-based trading software to <strong style="color:var(--fg);font-weight:500">your own broker account</strong> and executes 24 hours a day, five days a week. No charts, no emotion, no guesswork. <span class="hide-m">Watch the breakdown below, then book a call to see if it's right for you.</span></p>
+    </div>
+
+    <div class="vsl rv d3">
+      <div class="frame">
+        <span class="c1"></span><span class="c2"></span>
+        <div class="frame-bar"><span class="live"><i class="dot"></i>System overview</span><span>Watch with sound on</span></div>
+        <div class="vsl-inner">
+          <wistia-player media-id="vfcmtx6vb6" aspect="1.7777777777777777"></wistia-player>
+        </div>
+      </div>
+      <div class="vsl-note">
+        <span>Runs on your own broker account</span>
+        <span>Your funds never leave your control</span>
+        <span>No trading experience needed</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== APPLICATION / BOOKING ===================== -->
+<section class="apply" id="apply">
+  <div class="wrap">
+    <div class="apply-head rv">
+      <div class="step-tag"><i class="dot"></i> Next step</div>
+      <h2>Book your onboarding call</h2>
+      <p>Pick a time that suits you. On the call we'll check whether X Automation fits your goals and walk you through exactly how setup works. No obligation, no pressure.</p>
+    </div>
+
+    <div class="form-frame frame rv d1">
+      <span class="c1"></span><span class="c2"></span>
+      <div class="frame-bar"><span class="live"><i class="dot"></i>Secure booking</span><span>Takes ~60 seconds</span></div>
+      <div class="form-body">
+        <iframe src="https://api.leadconnectorhq.com/widget/booking/xiXMRX54MPrFQ8UxUEAx" allow="payment" style="width:100%;border:none;overflow:hidden;" scrolling="no" id="xiXMRX54MPrFQ8UxUEAx_1791987903764" title="Book your call"></iframe>
+      </div>
+    </div>
+
+    <div class="trust rv d2">
+      <div><svg viewBox="0 0 16 16" fill="none" stroke="#fafafa" stroke-width="1.2"><rect x="3" y="7" width="10" height="7"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>Secure connection</div>
+      <div><svg viewBox="0 0 16 16" fill="none" stroke="#fafafa" stroke-width="1.2"><path d="M8 1.5 2.5 4v4c0 3.2 2.3 5.6 5.5 6.5 3.2-.9 5.5-3.3 5.5-6.5V4z"/></svg>We never touch your funds</div>
+      <div><svg viewBox="0 0 16 16" fill="none" stroke="#fafafa" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M5 8h6"/></svg>Disconnect anytime</div>
+      <div><svg viewBox="0 0 16 16" fill="none" stroke="#fafafa" stroke-width="1.2"><path d="M3 2h7l3 3v9H3z"/><path d="M5.5 8h5M5.5 11h5"/></svg>Full risk disclosure</div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== MARQUEE ===================== -->
+<div class="marquee" aria-hidden="true">
+  <div class="marquee-track">
+    <span>Rules over emotion</span><span>Discipline over excitement</span><span>Data over opinion</span><span>Long term over short term</span><span>Transparency over hype</span><span>Systems over guesswork</span>
+    <span>Rules over emotion</span><span>Discipline over excitement</span><span>Data over opinion</span><span>Long term over short term</span><span>Transparency over hype</span><span>Systems over guesswork</span>
+  </div>
+</div>
+
+<!-- ===================== 01 PROBLEM ===================== -->
+<section class="block">
+  <div class="wrap">
+    <div class="split">
+      <div>
+        <div class="sec-head" style="margin-bottom:0">
+          <div class="eyebrow rv">01 / The problem</div>
+          <h2 class="rv d1">Most traders don't lose on strategy. <span class="dim">They lose on execution.</span></h2>
+          <p class="rv d2">Fear closes winning trades too early. Hope holds losing trades too long. Fatigue makes you miss the move entirely. The edge isn't knowing what to do. It's doing it the same way, every single time, at 3am on a Tuesday as much as 10am on a Monday.</p>
+          <p class="rv d2">Humans aren't built for that. Software is.</p>
+        </div>
+        <div class="stats rv d3">
+          <div class="stat"><div class="n"><span data-count="24">0</span>h</div><div class="l">Market coverage / day</div></div>
+          <div class="stat"><div class="n" data-count="0">0</div><div class="l">Emotional decisions</div></div>
+          <div class="stat"><div class="n"><span data-count="100">0</span>%</div><div class="l">Rules-based execution</div></div>
+        </div>
+      </div>
+
+      <div class="rv d2">
+        <div class="frame">
+          <span class="c1"></span><span class="c2"></span>
+          <div class="frame-bar"><span>Human trader vs system</span><span>Comparison</span></div>
+          <div style="padding:6px 16px 10px">
+            <table class="vs">
+              <thead><tr><th></th><th>Human</th><th>X Automation</th></tr></thead>
+              <tbody>
+                <tr><td>Trades on emotion</td><td><span class="x">Often</span></td><td><span class="x">Never</span></td></tr>
+                <tr><td>Watches markets 24/5</td><td><span class="x">No</span></td><td><span class="x">Always</span></td></tr>
+                <tr><td>Follows the rules every time</td><td><span class="x">Sometimes</span></td><td><span class="x">Every time</span></td></tr>
+                <tr><td>Gets tired or distracted</td><td><span class="x">Yes</span></td><td><span class="x">Never</span></td></tr>
+                <tr><td>Monitors many pairs at once</td><td><span class="x">Difficult</span></td><td><span class="x">Effortless</span></td></tr>
+                <tr><td>Reacts in milliseconds</td><td><span class="x">No</span></td><td><span class="x">Yes</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 02 EDUCATION ===================== -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">02 / The basics</div>
+      <h2 class="rv d1">What is algorithmic trading?</h2>
+      <p class="lede rv d2">In plain English: it's software that follows a fixed set of trading rules automatically. It reads market data, decides whether the rules say to act, and places the order on your account. No one is sitting there clicking buttons.</p>
+    </div>
+
+    <div class="pipe rv">
+      <div class="pipe-node"><div class="k">Input</div><h3>Market data</h3><p>Live prices across the major currency pairs, streamed in real time.</p></div>
+      <div class="pipe-link"></div>
+      <div class="pipe-node"><div class="k">Logic</div><h3>Fixed rules</h3><p>The system checks every price movement against its rules. No opinions, no hunches.</p></div>
+      <div class="pipe-link"></div>
+      <div class="pipe-node"><div class="k">Output</div><h3>Order executed</h3><p>When the rules are met, the trade is placed and managed on your broker account.</p></div>
+    </div>
+
+    <div class="cards">
+      <div class="card rv"><div class="idx">A.</div><h3>It follows rules, not feelings</h3><p>A losing streak doesn't make it nervous, and a winning streak doesn't make it greedy. It does exactly what it was built to do.</p></div>
+      <div class="card rv d1"><div class="idx">B.</div><h3>It watches everything at once</h3><p>A person can track a chart or two. Software can monitor every pair it trades, every second the market is open.</p></div>
+      <div class="card rv d2"><div class="idx">C.</div><h3>It never clocks off</h3><p>Forex trades around the clock from Sunday night to Friday night. The system covers the Sydney, Tokyo, London and New York sessions without a break.</p></div>
+    </div>
+
+    <div class="not rv">
+      <span class="tag">What it isn't</span>
+      <ul>
+        <li><strong>Not a get-rich-quick scheme.</strong>It's a tool for disciplined, long-term execution. Losing periods happen.</li>
+        <li><strong>Not a guarantee.</strong>Trading carries real risk and past performance never guarantees future results.</li>
+        <li><strong>Not a fund.</strong>We never hold your money. It stays in your own broker account, in your name.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 03 ENGINE ===================== -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">03 / The engine</div>
+      <h2 class="rv d1">Three layers. <span class="dim">One automated system.</span></h2>
+      <p class="rv d2">Each part of the process runs as its own layer, so every decision is data-driven and nothing is left to chance.</p>
+    </div>
+
+    <div class="engine">
+      <div class="eng frame rv">
+        <span class="c1"></span><span class="c2"></span>
+        <div class="viz">
+          <div class="meter" id="meter"></div>
+          <div class="viz-cap"><span>WEAK</span><span>RELATIVE STRENGTH</span><span>STRONG</span></div>
+        </div>
+        <div class="txt"><div class="k">Layer 01 · Analysis</div><h3>It reads the whole market.</h3><p>The system measures strength across the major currencies in real time and looks for imbalances its rules are built to trade.</p></div>
+      </div>
+
+      <div class="eng frame rv d1">
+        <span class="c1"></span><span class="c2"></span>
+        <div class="viz">
+          <div class="ladder" id="ladder"><div class="eq" style="bottom:72%"><span>EQUITY</span></div></div>
+          <div class="viz-cap"><span>ENTRY</span><span>EXPOSURE SCALES WITH BALANCE</span><span>TARGET</span></div>
+        </div>
+        <div class="txt"><div class="k">Layer 02 · Risk</div><h3>Exposure, built in steps.</h3><p>Position sizes are calculated from your account balance, so risk stays proportionate whether the account grows or pulls back.</p></div>
+      </div>
+
+      <div class="eng frame rv d2">
+        <span class="c1"></span><span class="c2"></span>
+        <div class="viz"><div class="log" id="log"></div></div>
+        <div class="txt"><div class="k">Layer 03 · Execution</div><h3>You never have to touch it.</h3><p>It runs on cloud servers, not your laptop. Your computer can be off and you can be asleep or abroad. It keeps working through market hours.</p></div>
+      </div>
+    </div>
+    <p class="mono rv" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);margin-top:18px">Visuals are illustrative representations, not live data.</p>
+  </div>
+</section>
+
+<!-- ===================== 04 SETUP ===================== -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">04 / Getting started</div>
+      <h2 class="rv d1">From first call to fully automated <span class="dim">in four steps.</span></h2>
+    </div>
+
+    <div class="tabs rv" id="tabs">
+      <div class="tab-list" role="tablist">
+        <button class="tab-btn" role="tab" aria-selected="true" data-i="0"><span class="num">01</span><span class="nm">Book a call</span><i class="prog"></i></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-i="1"><span class="num">02</span><span class="nm">Open your account</span><i class="prog"></i></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-i="2"><span class="num">03</span><span class="nm">We connect it</span><i class="prog"></i></button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-i="3"><span class="num">04</span><span class="nm">Watch it run</span><i class="prog"></i></button>
+      </div>
+      <div>
+        <div class="tab-panel on" role="tabpanel">
+          <h3>Talk to the team.</h3>
+          <p>A short call to understand your goals and experience, answer your questions, and confirm whether X Automation is a good fit. If it's not, we'll tell you.</p>
+          <div class="specs"><div><div class="k">Time</div><div class="v">~20 min</div></div><div><div class="k">Cost</div><div class="v">Free</div></div><div><div class="k">Obligation</div><div class="v">None</div></div></div>
+        </div>
+        <div class="tab-panel" role="tabpanel">
+          <h3>Open a live account in your name.</h3>
+          <p>You open and fund an account with our partner broker. The money stays in your account at all times. We never hold it, and we can't withdraw it.</p>
+          <!-- EDIT: confirm broker + minimum -->
+          <div class="specs"><div><div class="k">Broker</div><div class="v">Vantage</div></div><div><div class="k">Min. deposit</div><div class="v">£X,XXX</div></div><div><div class="k">Time</div><div class="v">~10 min</div></div></div>
+        </div>
+        <div class="tab-panel" role="tabpanel">
+          <h3>We plug the system in.</h3>
+          <p>Share your trading platform login and our team connects the software to your account through a secure connection. There's nothing for you to install.</p>
+          <!-- EDIT: confirm platform + go-live time -->
+          <div class="specs"><div><div class="k">Platform</div><div class="v">MT4 / MT5</div></div><div><div class="k">Go-live</div><div class="v">XX–XX hrs</div></div><div><div class="k">Install</div><div class="v">Nothing</div></div></div>
+        </div>
+        <div class="tab-panel" role="tabpanel">
+          <h3>See every trade, as it happens.</h3>
+          <p>The system trades automatically. You can log in to your trading app at any time and see every open position, every closed trade and your full account history.</p>
+          <div class="specs"><div><div class="k">Hours</div><div class="v">24 / 5</div></div><div><div class="k">Visibility</div><div class="v">Real-time</div></div><div><div class="k">Control</div><div class="v">Yours</div></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 05 RESULTS ===================== -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <!-- EDIT: delete this flag once real verified figures are in -->
+      <div class="placeholder-flag">● Placeholder data · replace with verified figures before launch</div><br>
+      <div class="eyebrow rv">05 / Performance</div>
+      <h2 class="rv d1">Don't trust us. <span class="dim">Verify us.</span></h2>
+      <p class="rv d2">Every figure here comes from a live account with an independently verified, trade-by-trade public record. Open it and check it yourself.</p>
+    </div>
+
+    <div class="results">
+      <div class="chart frame rv">
+        <span class="c1"></span><span class="c2"></span>
+        <div class="frame-bar"><span class="live"><i class="dot"></i>Live account · equity growth</span><span>MMM YY – MMM YY</span></div>
+        <div class="chart-body">
+          <svg viewBox="0 0 640 300" id="chart" aria-label="Account growth chart (placeholder)">
+            <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb020" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
+          </svg>
+        </div>
+      </div>
+      <div class="rstats">
+        <div class="rstat frame rv d1"><span class="c1"></span><span class="c2"></span><div class="k">Total gain</div><div class="v">+XX.X%</div><p>Since the account went live.</p></div>
+        <div class="rstat frame rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Win rate</div><div class="v">XX%</div><p>Share of closed trades in profit.</p></div>
+        <div class="rstat frame rv d3"><span class="c1"></span><span class="c2"></span><div class="k">Max drawdown</div><div class="v">−XX%</div><p>The deepest peak-to-trough fall the account has taken.</p></div>
+      </div>
+    </div>
+    <!-- EDIT: Myfxbook link -->
+    <a class="verify rv" href="#" target="_blank" rel="noopener">Verify on Myfxbook ↗</a>
+    <p class="dd-note rv"><strong style="color:var(--fg);font-weight:500">About drawdowns:</strong> every trading account has losing periods. The max drawdown above is the worst fall this account has seen. You should only ever trade with money you could afford to see drop by that amount or more.</p>
+  </div>
+</section>
+
+<!-- ===================== 06 TESTIMONIALS ===================== -->
+<!-- EDIT: remove the word "hidden" below to show the testimonial carousel -->
+<section class="block" id="testimonials" hidden>
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">06 / Clients</div>
+      <h2 class="rv d1">Real people. <span class="dim">Real accounts.</span></h2>
+      <p class="rv d2">Messages from clients running the system on their own accounts.</p>
+    </div>
+  </div>
+  <div class="tcar rv" id="tcar"></div>
+  <div class="wrap"><p class="mono" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);margin-top:18px">Tap any card to enlarge</p></div>
+</section>
+
+<div class="lb" id="lb" role="dialog" aria-label="Testimonial"><span class="x">Close ✕</span><img alt=""></div>
+
+<!-- ===================== 07 FIT ===================== -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head center">
+      <div class="eyebrow rv">07 / Is it for you</div>
+      <h2 class="rv d1">Built for some people. <span class="dim">Not for everyone.</span></h2>
+    </div>
+    <div class="fit">
+      <div class="frame yes rv"><span class="c1"></span><span class="c2"></span>
+        <h3><i class="dot"></i>It's a fit if you…</h3>
+        <ul>
+          <li>Want exposure to the forex market without staring at charts</li>
+          <li>Value a disciplined, rules-based approach over gut feel</li>
+          <li>Are thinking in months and years, not days</li>
+          <li>Have capital you can afford to put at risk</li>
+          <li>Want full visibility and control of your own account</li>
+        </ul>
+      </div>
+      <div class="frame no rv d1"><span class="c1"></span><span class="c2"></span>
+        <h3 style="color:var(--fg-2)">It's not a fit if you…</h3>
+        <ul>
+          <li>Need the money for bills, rent or emergencies</li>
+          <li>Expect guaranteed returns or no losing periods</li>
+          <li>Want to get rich in a few weeks</li>
+          <li>Plan to trade manually on the same account</li>
+          <li>Are uncomfortable with any level of financial risk</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 08 TRANSPARENCY ===================== -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">08 / How we get paid</div>
+      <h2 class="rv d1">No hidden incentives. <span class="dim">Here's exactly how it works.</span></h2>
+    </div>
+    <!-- EDIT: confirm pricing model wording -->
+    <div class="paid">
+      <div class="card rv"><div class="idx">01 · Licence</div><div class="big">Fixed</div><h3>One clear fee</h3><p>You pay a fixed fee to license the software. No share of your profits, no surprise charges. We'll take you through pricing on the call.</p></div>
+      <div class="card rv d1"><div class="idx">02 · Broker</div><div class="big">Rebate</div><h3>Paid by the broker</h3><p>Our partner broker pays us a small rebate based on trading volume. It comes from the broker, never out of your account.</p></div>
+      <div class="card rv d2"><div class="idx">03 · Your funds</div><div class="big">£0</div><h3>Held by us</h3><p>Your money sits in your own broker account, in your name. We can place trades through the software. We can't withdraw a penny.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 09 TEAM ===================== -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head">
+      <div class="eyebrow rv">09 / The team</div>
+      <h2 class="rv d1">Built by people <span class="dim">you can actually find.</span></h2>
+      <p class="rv d2">No anonymous accounts and no rented lifestyles. Just a team that runs the business in the open.</p>
+    </div>
+    <!-- EDIT: names, roles, bios, photos -->
+    <div class="team">
+      <div class="member frame rv"><span class="c1"></span><span class="c2"></span><div class="pic">[ A ]</div><div class="bio"><h3>Founder name</h3><div class="role">Co-founder · Role</div><p>Two or three lines on background, why you started this, and what you do day to day.</p></div></div>
+      <div class="member frame rv d1"><span class="c1"></span><span class="c2"></span><div class="pic">[ B ]</div><div class="bio"><h3>Founder name</h3><div class="role">Co-founder · Role</div><p>Two or three lines on background, why you started this, and what you do day to day.</p></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== 10 FAQ ===================== -->
+<section class="block">
+  <div class="wrap">
+    <div class="sec-head center">
+      <div class="eyebrow rv">10 / FAQ</div>
+      <h2 class="rv d1">Questions people <span class="dim">always ask.</span></h2>
+    </div>
+    <div class="faq rv">
+      <details><summary>Is this legit, or is it a scam?<span class="pm">+</span></summary><div class="ans">Fair question in this industry. Your money never comes to us. It stays in your own regulated broker account, in your name, and you can withdraw it at any time. Our results come from live accounts with public, independently verified trade histories that you can check yourself.</div></details>
+      <details><summary>Can I lose money?<span class="pm">+</span></summary><div class="ans">Yes. Forex trading carries real risk, losing periods are a normal part of how any system trades, and past performance does not guarantee future results. Only use money you can afford to lose.</div></details>
+      <details><summary>Do I need any trading experience?<span class="pm">+</span></summary><div class="ans">No. The software handles analysis, entries, exits and risk management. You don't need to read charts or place trades. We'll walk you through setup on the call.</div></details>
+      <details><summary>Who holds my money?<span class="pm">+</span></summary><div class="ans">You do. Funds stay in your own account with the broker. The software can place trades on that account but has no ability to withdraw or move money.</div></details>
+      <!-- EDIT: confirm minimum -->
+      <details><summary>How much do I need to start?<span class="pm">+</span></summary><div class="ans">The minimum account balance is £X,XXX. Start with an amount you're comfortable with, because you can always add more later.</div></details>
+      <details><summary>Do I need to keep my computer on?<span class="pm">+</span></summary><div class="ans">No. The system runs on cloud servers, so it keeps working whether your computer is on, off, or you're on holiday.</div></details>
+      <details><summary>Can I withdraw whenever I want?<span class="pm">+</span></summary><div class="ans">Yes. Withdrawals are made directly through your broker and are entirely in your control.</div></details>
+      <details><summary>What happens on the call?<span class="pm">+</span></summary><div class="ans">We'll ask a few questions about your goals and experience, explain exactly how the system works and what it costs, and answer anything you're unsure about. If it isn't the right fit, we'll say so.</div></details>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FINAL CTA ===================== -->
+<section class="final">
+  <div class="hero-bg" aria-hidden="true"><div class="grid"></div></div>
+  <div class="wrap">
+    <div class="eyebrow rv" style="margin-bottom:26px">System ready</div>
+    <h2 class="rv d1">Stop watching charts. <br><span class="dim">Start running a system.</span></h2>
+    <p class="rv d2">Book a free call and see whether X Automation is right for you.</p>
+    <a href="#apply" class="btn btn-primary rv d3">Book your call <span class="arr">↑</span></a>
+  </div>
+</section>
+
+</main>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-top">
+      <a href="#top" class="logo" aria-label="X Automation">
+        <svg viewBox="0 0 24 24" fill="#fafafa" aria-hidden="true"><polygon points="1.5,2 5,2 10.5,12 5,22 1.5,22 7,12"/><polygon points="22.5,2 19,2 13.5,12 19,22 22.5,22 17,12"/><rect x="11.25" y="11.25" width="1.5" height="1.5" fill="#ffb020"/></svg>
+        <span class="word">AUTOMATION</span>
+      </a>
+      <!-- EDIT: link to your legal pages -->
+      <nav class="foot-links"><a href="#">Risk disclosure</a><a href="#">Terms</a><a href="#">Privacy</a></nav>
+    </div>
+    <p class="risk"><strong>Risk warning:</strong> Trading foreign exchange and CFDs on margin carries a high level of risk and may not be suitable for all investors. Leverage can work against you as well as for you, and you could lose some or all of your deposited funds. Past performance is not indicative of future results. X Automation provides trade-execution software only. We are not a broker, fund manager or financial adviser, we do not hold client funds, and nothing on this page is financial advice. Any results shown relate to specific accounts over specific periods and are not a guarantee of future performance. Before trading, consider your objectives, experience and financial situation, and seek independent advice if necessary.</p>
+    <div class="copy">© 2026 X AUTOMATION · ALL RIGHTS RESERVED</div>
+  </div>
+</footer>
+
+<div class="sticky" id="sticky"><a href="#apply"><span>Book your call</span><span>↑</span></a></div>
+
+<!-- ===== Booking form: GoHighLevel ===== -->
+<script src="https://link.msgsndr.com/js/form_embed.js" type="text/javascript" defer></script>
+
+<script>
+(()=>{
+const RM = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+/* ---- Reveal + counters ---- */
+const count = el=>{
+  const to=+el.dataset.count, dur=1400, t0=performance.now();
+  if(to===0||RM){el.textContent=to;return}
+  const step=t=>{const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e);if(p<1)requestAnimationFrame(step)};
+  requestAnimationFrame(step);
+};
+const io=new IntersectionObserver(es=>es.forEach(e=>{
+  if(!e.isIntersecting)return;
+  e.target.classList.add('in');
+  e.target.querySelectorAll('[data-count]').forEach(count);
+  if(e.target.matches('[data-count]'))count(e.target);
+  io.unobserve(e.target);
+}),{threshold:.15,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.rv,.eng,.chart').forEach(el=>io.observe(el));
+
+/* ---- Market session clock (real, from UTC) ---- */
+const mkt=document.getElementById('mkt'),sess=document.getElementById('sess'),clock=document.getElementById('clock');
+const pad=n=>String(n).padStart(2,'0');
+const tick=()=>{
+  const d=new Date(),day=d.getUTCDay(),h=d.getUTCHours()+d.getUTCMinutes()/60;
+  clock.textContent=`${pad(d.getUTCHours())}:${pad(d.getUTCMinutes())}:${pad(d.getUTCSeconds())} UTC`;
+  const closed = day===6 || (day===5&&h>=22) || (day===0&&h<22);
+  document.getElementById('mktwrap').classList.toggle('closed',closed);
+  if(closed){mkt.textContent='FX market closed';sess.textContent='Reopens Sun 22:00 UTC';return}
+  mkt.textContent='FX market open';
+  const s=[];
+  if(h>=22||h<7)s.push('Sydney');
+  if(h<9)s.push('Tokyo');
+  if(h>=7&&h<16)s.push('London');
+  if(h>=13&&h<22)s.push('New York');
+  sess.textContent='Session: '+s.join(' / ');
+};
+tick();setInterval(tick,1000);
+
+/* ---- Hero particle field (lightweight) ---- */
+const cv=document.getElementById('field');
+if(cv&&!RM){
+  const ctx=cv.getContext('2d');let W,H,pts=[],dpr=Math.min(2,devicePixelRatio||1),run=true;
+  const init=()=>{W=cv.clientWidth;H=cv.clientHeight;cv.width=W*dpr;cv.height=H*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);
+    const n=Math.round(Math.min(70,W*H/16000));pts=Array.from({length:n},()=>({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.18,vy:(Math.random()-.5)*.18}))};
+  const draw=()=>{if(!run)return;ctx.clearRect(0,0,W,H);
+    for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>W)p.vx*=-1;if(p.y<0||p.y>H)p.vy*=-1}
+    for(let i=0;i<pts.length;i++){const a=pts[i];
+      for(let j=i+1;j<pts.length;j++){const b=pts[j],dx=a.x-b.x,dy=a.y-b.y,d=dx*dx+dy*dy;
+        if(d<16000){ctx.strokeStyle=`rgba(255,255,255,${.12*(1-d/16000)})`;ctx.lineWidth=1;ctx.beginPath();ctx.moveTo(a.x,a.y);ctx.lineTo(b.x,b.y);ctx.stroke()}}
+      ctx.fillStyle='rgba(255,255,255,.5)';ctx.fillRect(a.x-1,a.y-1,2,2)}
+    requestAnimationFrame(draw)};
+  init();draw();addEventListener('resize',init);
+  new IntersectionObserver(([e])=>{const was=run;run=e.isIntersecting;if(run&&!was)draw()}).observe(cv);
+}
+
+/* ---- Engine: strength meter (illustrative) ---- */
+const meter=document.getElementById('meter');
+const ccy=['USD','EUR','GBP','JPY','CHF','CAD','AUD','NZD'];
+let vals=ccy.map(()=>20+Math.random()*70);
+meter.innerHTML=ccy.map(c=>`<div class="meter-row"><span>${c}</span><span class="meter-bar"><i style="width:0"></i></span><span class="v">0</span></div>`).join('');
+const rows=[...meter.children];
+const upd=()=>{vals=vals.map(v=>Math.max(6,Math.min(96,v+(Math.random()-.5)*22)));
+  rows.forEach((r,i)=>{r.querySelector('i').style.width=vals[i]+'%';r.querySelector('.v').textContent=Math.round(vals[i])})};
+setTimeout(upd,400);if(!RM)setInterval(upd,2200);
+
+/* ---- Engine: exposure ladder ---- */
+const lad=document.getElementById('ladder');
+[18,26,34,42,52,60,70,80,90].forEach((h,i)=>{const b=document.createElement('i');b.style.height=h+'%';b.style.transitionDelay=(i*.07)+'s';lad.appendChild(b)});
+
+/* ---- Engine: execution log (illustrative) ---- */
+const log=document.getElementById('log');
+const lines=['> system.boot','  cloud node .......... <span class="ok">online</span>','  broker link ......... <span class="ok">secure</span>','> feed.subscribe fx_majors','  stream .............. <span class="ok">live</span>','> rules.evaluate','  signal .............. none','  signal .............. none','  signal .............. <span class="ok">match</span>','> risk.size → equity-scaled','> order.route','  status .............. <span class="ok">filled</span>','> monitor.positions'];
+let li=0;const addLine=()=>{log.innerHTML=lines.slice(Math.max(0,li-8),li+1).join('<br>')+'<br><span class="cur"></span>';li=(li+1)%lines.length;if(li===0)setTimeout(()=>{},0)};
+addLine();if(!RM)setInterval(addLine,900);else log.innerHTML=lines.slice(0,9).join('<br>');
+
+/* ---- Results chart (PLACEHOLDER curve) ---- */
+const svg=document.getElementById('chart'),NS='http://www.w3.org/2000/svg',W2=640,H2=300,L=44,R=12,T=14,B=30;
+for(let i=0;i<=4;i++){const y=T+(H2-T-B)*i/4;const g=document.createElementNS(NS,'line');g.setAttribute('x1',L);g.setAttribute('x2',W2-R);g.setAttribute('y1',y);g.setAttribute('y2',y);g.setAttribute('class','gl');svg.appendChild(g);
+  const t=document.createElementNS(NS,'text');t.setAttribute('x',0);t.setAttribute('y',y+3);t.setAttribute('class','ax');t.textContent=['+XX%','+XX%','+XX%','+XX%','0%'][i];svg.appendChild(t)}
+['M1','M2','M3','M4','M5','M6'].forEach((m,i)=>{const t=document.createElementNS(NS,'text');t.setAttribute('x',L+(W2-L-R)*i/5-(i===5?18:0));t.setAttribute('y',H2-8);t.setAttribute('class','ax');t.textContent=m;svg.appendChild(t)});
+let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
+const N=90;let v=0;const pts=[];for(let i=0;i<N;i++){const dd=(i>48&&i<60)?-.9:.55;v+=dd+(rnd()-.45)*2.2;v=Math.max(0,v);pts.push(v)}
+const mx=Math.max(...pts);const P=pts.map((p,i)=>[L+(W2-L-R)*i/(N-1),T+(H2-T-B)*(1-p/mx)]);
+const d='M'+P.map(p=>p.map(n=>n.toFixed(1)).join(',')).join('L');
+const area=document.createElementNS(NS,'path');area.setAttribute('d',d+`L${W2-R},${H2-B}L${L},${H2-B}Z`);area.setAttribute('fill','url(#ag)');area.setAttribute('class','area');svg.appendChild(area);
+const ln=document.createElementNS(NS,'path');ln.setAttribute('d',d);ln.setAttribute('class','ln');svg.appendChild(ln);
+ln.style.setProperty('--len',Math.ceil(ln.getTotalLength()));
+const last=P[P.length-1],c=document.createElementNS(NS,'circle');c.setAttribute('cx',last[0]);c.setAttribute('cy',last[1]);c.setAttribute('r',3.5);c.setAttribute('fill','#ffb020');svg.appendChild(c);
+
+/* ---- Testimonials carousel (endless, two rows, opposite directions) ---- */
+// EDIT: file names must match the images/ folder in the repo exactly
+const TESTI=[
+  ['Ben Davies','testimonial-ben-davies (1).webp'],
+  ['Carlton Grimm','testimonial-carlton-grimm (1).webp'],
+  ['Lewis McCaulay','testimonial-lewis-mccaulay (1).webp'],
+  ['Liam Patel','testimonial-liam-patel (1).webp'],
+  ['Sam Morley','testimonial-sam-morley (1).webp'],
+  ['Sarah Jenkins','testimonial-sarah-jenkins (1).webp'],
+];
+const src=f=>'images/'+encodeURIComponent(f);
+const card=([n,f])=>`<figure class="tcard"><div class="img"><img src="${src(f)}" alt="Testimonial from ${n}" loading="lazy" decoding="async"></div><figcaption>${n}<span>Client</span></figcaption></figure>`;
+const row=(list,rev)=>{const set=list.concat(list).map(card).join('');return `<div class="trow${rev?' rev':''}"><div class="ttrack">${set}${set}</div></div>`};
+const tcar=document.getElementById('tcar');
+const rev2=[...TESTI].reverse();
+tcar.innerHTML=row(TESTI,false)+row(rev2.slice(3).concat(rev2.slice(0,3)),true);
+const lb=document.getElementById('lb'),lbi=lb.querySelector('img');
+tcar.addEventListener('click',e=>{const im=e.target.closest('.tcard')?.querySelector('img');if(!im)return;lbi.src=im.src;lbi.alt=im.alt;lb.classList.add('on')});
+lb.addEventListener('click',()=>lb.classList.remove('on'));
+addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('on')});
+
+/* ---- Setup tabs (auto-advance until clicked) ---- */
+const tabs=document.getElementById('tabs'),btns=[...tabs.querySelectorAll('.tab-btn')],panels=[...tabs.querySelectorAll('.tab-panel')];
+let cur=0,timer=null;
+const show=i=>{cur=i;btns.forEach((b,j)=>b.setAttribute('aria-selected',j===i));panels.forEach((p,j)=>p.classList.toggle('on',j===i))};
+const auto=()=>{clearInterval(timer);timer=setInterval(()=>show((cur+1)%btns.length),6000)};
+btns.forEach(b=>b.addEventListener('click',()=>{clearInterval(timer);tabs.classList.add('manual');show(+b.dataset.i)}));
+if(!RM)new IntersectionObserver(([e])=>{if(e.isIntersecting&&!tabs.classList.contains('manual')){show(cur);auto()}else clearInterval(timer)},{threshold:.4}).observe(tabs);
+
+/* ---- Sticky mobile CTA: show once past the form, hide when form/final CTA visible ---- */
+const sticky=document.getElementById('sticky'),apply=document.getElementById('apply'),fin=document.querySelector('.final');
+let applyVis=true,finVis=false,past=false;
+const upS=()=>sticky.classList.toggle('show',past&&!applyVis&&!finVis);
+new IntersectionObserver(([e])=>{applyVis=e.isIntersecting;past=e.boundingClientRect.top<0||past&&!e.isIntersecting&&e.boundingClientRect.top<0;upS()}).observe(apply);
+new IntersectionObserver(([e])=>{finVis=e.isIntersecting;upS()}).observe(fin);
+})();
+</script>
+</body>
+</html>

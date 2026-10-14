@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 196 24" fill="#fafafa" role="img" aria-label="X Automation">
+  <!-- Mark: two opposing chevrons form the X; the centre square is the "signal" -->
+  <polygon points="1.5,2 5,2 10.5,12 5,22 1.5,22 7,12"/>
+  <polygon points="22.5,2 19,2 13.5,12 19,22 22.5,22 17,12"/>
+  <rect x="11.25" y="11.25" width="1.5" height="1.5" fill="#ffb020"/>
+  <!-- Wordmark -->
+  <text x="34" y="17" font-family="Geist, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="500" letter-spacing="3.2">AUTOMATION</text>
+</svg>
