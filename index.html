@@ -292,14 +292,6 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .paid{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line)}
 .paid .card .big{font-size:56px;font-weight:500;letter-spacing:-.05em;line-height:1;margin-top:10px}
 
-/* Team */
-.team{display:grid;grid-template-columns:1fr 1fr;gap:20px}
-.member{display:grid;grid-template-columns:140px 1fr;gap:0}
-.member .pic{border-right:1px solid var(--line);display:grid;place-items:center;font-family:var(--mono);font-size:26px;color:var(--fg-3);background:repeating-linear-gradient(0deg,rgba(255,255,255,.03) 0 1px,transparent 1px 4px);min-height:180px}
-.member .bio{padding:24px}
-.member .role{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3);margin-top:6px}
-.member p{font-size:14.5px;margin-top:14px}
-
 /* FAQ */
 .faq{max-width:860px;margin:0 auto;border-top:1px solid var(--line)}
 .faq details{border-bottom:1px solid var(--line)}
@@ -349,7 +341,7 @@ footer{padding:56px 0 110px}
   .tab-list{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
   .tab-btn{border-bottom:0;border-right:1px solid var(--line);flex:1 0 auto;padding:16px 18px}
   .tab-btn .nm{font-size:15px}
-  .fit,.team{grid-template-columns:1fr}
+  .fit{grid-template-columns:1fr}
   .trust{grid-template-columns:1fr 1fr}
   .trust div:nth-child(3){border-left:0}
   .trust div:nth-child(n+3){border-top:1px solid var(--line)}
@@ -367,7 +359,6 @@ footer{padding:56px 0 110px}
   .stat{border-left:0;border-top:1px solid var(--line)}
   .stat:first-child{border-top:0}
   .specs{grid-template-columns:1fr 1fr;gap:4px 16px}
-  .member{grid-template-columns:96px 1fr}
   .vs{font-size:14px}
   .vs th,.vs td{padding:13px 8px}
   .sticky{display:block}
@@ -717,39 +708,23 @@ footer{padding:56px 0 110px}
 <section class="block">
   <div class="wrap">
     <div class="sec-head">
-      <div class="eyebrow rv">08 / How we get paid</div>
-      <h2 class="rv d1">No hidden incentives. <span class="dim">Here's exactly how it works.</span></h2>
+      <div class="eyebrow rv">08 / Pricing</div>
+      <h2 class="rv d1">Simple pricing. <span class="dim">Your money stays yours.</span></h2>
     </div>
     <!-- EDIT: confirm pricing model wording -->
     <div class="paid">
       <div class="card rv"><div class="idx">01 · Licence</div><div class="big">Fixed</div><h3>One clear fee</h3><p>You pay a fixed fee to license the software. No share of your profits, no surprise charges. We'll take you through pricing on the call.</p></div>
-      <div class="card rv d1"><div class="idx">02 · Broker</div><div class="big">Rebate</div><h3>Paid by the broker</h3><p>Our partner broker pays us a small rebate based on trading volume. It comes from the broker, never out of your account.</p></div>
+      <div class="card rv d1"><div class="idx">02 · Control</div><div class="big">Anytime</div><h3>Disconnect when you like</h3><p>No lock-in. You can switch the software off on your account whenever you choose.</p></div>
       <div class="card rv d2"><div class="idx">03 · Your funds</div><div class="big">£0</div><h3>Held by us</h3><p>Your money sits in your own broker account, in your name. We can place trades through the software. We can't withdraw a penny.</p></div>
     </div>
   </div>
 </section>
 
-<!-- ===================== 09 TEAM ===================== -->
-<section class="block">
-  <div class="wrap">
-    <div class="sec-head">
-      <div class="eyebrow rv">09 / The team</div>
-      <h2 class="rv d1">Built by people <span class="dim">you can actually find.</span></h2>
-      <p class="rv d2">No anonymous accounts and no rented lifestyles. Just a team that runs the business in the open.</p>
-    </div>
-    <!-- EDIT: names, roles, bios, photos -->
-    <div class="team">
-      <div class="member frame rv"><span class="c1"></span><span class="c2"></span><div class="pic">[ A ]</div><div class="bio"><h3>Founder name</h3><div class="role">Co-founder · Role</div><p>Two or three lines on background, why you started this, and what you do day to day.</p></div></div>
-      <div class="member frame rv d1"><span class="c1"></span><span class="c2"></span><div class="pic">[ B ]</div><div class="bio"><h3>Founder name</h3><div class="role">Co-founder · Role</div><p>Two or three lines on background, why you started this, and what you do day to day.</p></div></div>
-    </div>
-  </div>
-</section>
-
-<!-- ===================== 10 FAQ ===================== -->
+<!-- ===================== 09 FAQ ===================== -->
 <section class="block">
   <div class="wrap">
     <div class="sec-head center">
-      <div class="eyebrow rv">10 / FAQ</div>
+      <div class="eyebrow rv">09 / FAQ</div>
       <h2 class="rv d1">Questions people <span class="dim">always ask.</span></h2>
     </div>
     <div class="faq rv">
