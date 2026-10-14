@@ -257,14 +257,15 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .verify{display:inline-flex;margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--fg-2);padding-bottom:3px}
 .dd-note{margin-top:20px;font-size:14px;max-width:780px}
 
-/* Testimonials carousel */
-.tcar{display:grid;gap:18px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
-.trow{overflow:hidden}
-.ttrack{display:flex;gap:18px;width:max-content;animation:tl 60s linear infinite}
-.trow.rev .ttrack{animation-name:tr}
-.tcar:hover .ttrack{animation-play-state:paused}
-@keyframes tl{to{transform:translateX(calc(-50% - 9px))}}
-@keyframes tr{from{transform:translateX(calc(-50% - 9px))}to{transform:translateX(0)}}
+/* Testimonials carousel: one row, endless, auto-scroll + drag/swipe/scroll */
+.tcar{position:relative;overflow:hidden;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
+.tcar.dragging{cursor:grabbing}
+.ttrack{display:flex;gap:18px;width:max-content;will-change:transform}
+.tcard img{-webkit-user-drag:none;pointer-events:none}
+.tnav{display:flex;justify-content:space-between;align-items:center;gap:16px;margin-top:22px}
+.tnav .btns{display:flex;gap:10px;flex:none}
+.tnav button{width:46px;height:46px;border-radius:50%;border:1px solid var(--line-2);background:transparent;color:var(--fg);font-family:var(--mono);font-size:16px;cursor:pointer;transition:border-color .2s,color .2s}
+.tnav button:hover{border-color:var(--accent);color:var(--accent)}
 .tcard{flex:none;width:320px;margin:0;cursor:zoom-in;background:var(--bg-1);border:1px solid var(--line-2);position:relative;transition:border-color .25s}
 .tcard:hover{border-color:var(--accent)}
 .tcard .img{aspect-ratio:1/1.11;overflow:hidden;background:#0a0a0a}
@@ -275,7 +276,7 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .lb.on{display:grid}
 .lb img{max-width:min(92vw,900px);max-height:86vh;object-fit:contain;border:1px solid var(--line-2)}
 .lb .x{position:absolute;top:18px;right:22px;font-family:var(--mono);font-size:12px;letter-spacing:.14em;color:var(--fg-2)}
-@media (max-width:640px){.tcard{width:250px}.ttrack{animation-duration:45s}}
+@media (max-width:640px){.tcard{width:250px}}
 
 /* Fit */
 .fit{display:grid;grid-template-columns:1fr 1fr;gap:20px}
@@ -665,8 +666,8 @@ footer{padding:56px 0 110px}
       <p class="rv d2">Messages from clients running the system on their own accounts.</p>
     </div>
   </div>
-  <div class="tcar rv" id="tcar"></div>
-  <div class="wrap"><p class="mono" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);margin-top:18px">Tap any card to enlarge · Individual client experiences. Results vary and are not typical or guaranteed.</p></div>
+  <div class="tcar rv" id="tcar" aria-label="Client testimonials, drag or use arrows to browse"><div class="ttrack" id="ttrack"></div></div>
+  <div class="wrap"><div class="tnav"><p class="mono" style="font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);margin:0">Drag or swipe to browse · Tap to enlarge · Individual client experiences. Results vary and are not typical or guaranteed.</p><div class="btns"><button type="button" id="tprev" aria-label="Previous">←</button><button type="button" id="tnext" aria-label="Next">→</button></div></div></div>
 </section>
 
 <div class="lb" id="lb" role="dialog" aria-label="Testimonial"><span class="x">Close ✕</span><img alt=""></div>
@@ -875,13 +876,38 @@ const TESTI=[
   ['Sarah Jenkins','testimonial-sarah-jenkins (1).webp'],
 ];
 const src=f=>'images/'+encodeURIComponent(f);
-const card=([n,f])=>`<figure class="tcard"><div class="img"><img src="${src(f)}" alt="Testimonial from ${n}" loading="lazy" decoding="async"></div><figcaption>${n}<span>Client</span></figcaption></figure>`;
-const row=(list,rev)=>{const set=list.concat(list).map(card).join('');return `<div class="trow${rev?' rev':''}"><div class="ttrack">${set}${set}</div></div>`};
-const tcar=document.getElementById('tcar');
-const rev2=[...TESTI].reverse();
-tcar.innerHTML=row(TESTI,false)+row(rev2.slice(3).concat(rev2.slice(0,3)),true);
+const card=([n,f])=>`<figure class="tcard"><div class="img"><img src="${src(f)}" alt="Testimonial from ${n}" loading="lazy" decoding="async" draggable="false"></div><figcaption>${n}<span>Client</span></figcaption></figure>`;
+const tcar=document.getElementById('tcar'),ttrack=document.getElementById('ttrack');
+const oneSet=TESTI.map(card).join('');
+ttrack.innerHTML=oneSet+oneSet+oneSet;           // 3 copies so it can wrap seamlessly
+let setW=0,x=0,hover=false,drag=null,moved=false,nudge=0,lastT=0;
+const SPEED=RM?0:28;                               // px per second auto-scroll
+const measure=()=>{const cards=ttrack.children;setW=cards[TESTI.length].offsetLeft-cards[0].offsetLeft;if(!x)x=-setW};
+const wrap=()=>{if(!setW)return;while(x<=-2*setW)x+=setW;while(x>-setW)x-=setW};
+const frame=t=>{const dt=lastT?Math.min(64,t-lastT)/1000:0;lastT=t;
+  if(!drag){ if(!hover)x-=SPEED*dt; if(nudge){const step=nudge*Math.min(1,dt*9);x+=step;nudge-=step;if(Math.abs(nudge)<.5)nudge=0} }
+  wrap();ttrack.style.transform=`translate3d(${x}px,0,0)`;requestAnimationFrame(frame)};
+addEventListener('load',measure);addEventListener('resize',()=>{const r=setW?x/setW:0;measure();if(r)x=r*setW});
+measure();requestAnimationFrame(frame);
+// hover pause (mouse only)
+tcar.addEventListener('pointerenter',e=>{if(e.pointerType==='mouse')hover=true});
+tcar.addEventListener('pointerleave',()=>{hover=false});
+// drag / swipe
+tcar.addEventListener('pointerdown',e=>{drag={sx:e.clientX,sy:e.clientY,ox:x,id:e.pointerId};moved=false;nudge=0});
+tcar.addEventListener('pointermove',e=>{if(!drag)return;const dx=e.clientX-drag.sx,dy=e.clientY-drag.sy;
+  if(!moved&&Math.abs(dx)>6&&Math.abs(dx)>Math.abs(dy)){moved=true;tcar.classList.add('dragging');try{tcar.setPointerCapture(drag.id)}catch(_){}}
+  if(moved){x=drag.ox+dx;wrap();drag.ox=x-dx}});
+const endDrag=()=>{drag=null;tcar.classList.remove('dragging')};
+tcar.addEventListener('pointerup',endDrag);tcar.addEventListener('pointercancel',endDrag);
+// trackpad / shift+wheel horizontal scroll
+tcar.addEventListener('wheel',e=>{const d=Math.abs(e.deltaX)>Math.abs(e.deltaY)?e.deltaX:(e.shiftKey?e.deltaY:0);if(!d)return;e.preventDefault();x-=d},{passive:false});
+// arrows
+const cardStep=()=>{const c=ttrack.children;return c.length>1?c[1].offsetLeft-c[0].offsetLeft:340};
+document.getElementById('tprev').addEventListener('click',()=>{nudge+=cardStep()});
+document.getElementById('tnext').addEventListener('click',()=>{nudge-=cardStep()});
+// tap to enlarge (ignored if the user was dragging)
 const lb=document.getElementById('lb'),lbi=lb.querySelector('img');
-tcar.addEventListener('click',e=>{const im=e.target.closest('.tcard')?.querySelector('img');if(!im)return;lbi.src=im.src;lbi.alt=im.alt;lb.classList.add('on')});
+tcar.addEventListener('click',e=>{if(moved){moved=false;return}const im=e.target.closest('.tcard')?.querySelector('img');if(!im)return;lbi.src=im.src;lbi.alt=im.alt;lb.classList.add('on')});
 lb.addEventListener('click',()=>lb.classList.remove('on'));
 addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('on')});
 
