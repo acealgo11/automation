@@ -890,11 +890,22 @@ if(cv&&!RM){
 /* ---- Engine: strength meter (illustrative) ---- */
 const meter=document.getElementById('meter');
 const ccy=['USD','EUR','GBP','JPY','CHF','CAD','AUD','NZD'];
-let vals=ccy.map(()=>20+Math.random()*70);
+// Illustrative strength model: each currency is pulled toward a moving target (mean reversion),
+// with small noise, occasional 'news shocks' that push one currency up and another down,
+// and a cap on how long any one currency can stay on top, so leadership rotates naturally.
+let vals=ccy.map(()=>25+Math.random()*55);
+let tgt=ccy.map(()=>20+Math.random()*65);
+let leader=-1,leadTicks=0;
 meter.innerHTML=ccy.map(c=>`<div class="meter-row"><span>${c}</span><span class="meter-bar"><i style="width:0"></i></span><span class="v">0</span></div>`).join('');
 const rows=[...meter.children];
-const upd=()=>{vals=vals.map(v=>Math.max(6,Math.min(96,v+(Math.random()-.5)*22)));
-  const top=vals.indexOf(Math.max(...vals));rows.forEach((r,i)=>{r.querySelector('i').style.width=vals[i]+'%';r.classList.toggle('lead',i===top);tweenNum(r.querySelector('.v'),Math.round(vals[i]))})};
+const upd=()=>{
+  if(Math.random()<.35){const up=Math.floor(Math.random()*8);let dn=Math.floor(Math.random()*7);if(dn>=up)dn++;
+    tgt[up]=Math.min(92,tgt[up]+18+Math.random()*25);tgt[dn]=Math.max(10,tgt[dn]-18-Math.random()*25)}
+  if(Math.random()<.25){const i=Math.floor(Math.random()*8);tgt[i]=15+Math.random()*75}
+  if(leader>=0&&leadTicks>=5+Math.floor(Math.random()*4))tgt[leader]=30+Math.random()*30;
+  vals=vals.map((v,i)=>Math.max(6,Math.min(96,v+(tgt[i]-v)*.28+(Math.random()-.5)*7)));
+  const top=vals.indexOf(Math.max(...vals));leadTicks=top===leader?leadTicks+1:0;leader=top;
+  rows.forEach((r,i)=>{r.querySelector('i').style.width=vals[i]+'%';r.classList.toggle('lead',i===top);tweenNum(r.querySelector('.v'),Math.round(vals[i]))})};
 let meterOn=false;
 const meterIO=new IntersectionObserver(([e])=>{if(e.isIntersecting&&!meterOn){meterOn=true;
   rows.forEach((r,i)=>{r.querySelector('i').style.transitionDelay=(i*90)+'ms'});
