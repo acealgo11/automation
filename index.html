@@ -205,13 +205,11 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .meter-row .v{text-align:right;color:var(--fg-3)}
 .viz-cap{position:absolute;left:18px;right:18px;bottom:10px;display:flex;justify-content:space-between;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--fg-3)}
 
-.ladder{position:absolute;inset:22px 22px 34px;display:flex;align-items:flex-end;gap:8px}
-.ladder i{flex:1;background:linear-gradient(180deg,#fff,rgba(255,255,255,.25));transform-origin:bottom;transform:scaleY(0);transition:transform 1.1s var(--ease)}
-.ladder i:last-child{background:linear-gradient(180deg,var(--accent),rgba(255,176,32,.2))}
-.eng.in .ladder i{transform:scaleY(1)}
-.ladder .eq{position:absolute;left:0;right:0;border-top:1px dashed var(--fg-2)}
-.ladder .eq span{position:absolute;right:0;top:-18px;font-family:var(--mono);font-size:9.5px;letter-spacing:.14em;color:var(--fg-2)}
-
+.pairs{position:absolute;inset:16px 18px 30px;display:grid;grid-template-columns:1fr 1fr;gap:6px 14px;align-content:start}
+.pair{display:flex;justify-content:space-between;align-items:center;font-family:var(--mono);font-size:10.5px;color:var(--fg-2);padding:5px 0;border-bottom:1px solid var(--line)}
+.pair s{text-decoration:none;font-size:9px;letter-spacing:.12em;padding:2px 6px;border:1px solid var(--line-2);color:var(--fg-2);transition:all .4s}
+.pair.paused{color:var(--fg-3)}
+.pair.paused s{border-color:var(--accent);color:var(--accent);background:rgba(255,176,32,.08)}
 .log{position:absolute;inset:0;padding:18px;font-family:var(--mono);font-size:11.5px;line-height:1.9;color:var(--fg-2);overflow:hidden}
 .log .ok{color:var(--accent)}
 .log .cur{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(1) infinite}
@@ -240,25 +238,57 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* Results */
-.placeholder-flag{display:inline-flex;gap:8px;align-items:center;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#000;background:var(--fg);padding:6px 10px;margin-bottom:22px}
-.results{display:grid;grid-template-columns:1.6fr 1fr;gap:20px}
-.chart{padding:0}
-.chart{display:flex;flex-direction:column}
-.chart-body{padding:22px 22px 14px;position:relative;flex:1;display:flex;align-items:center}
-.chart svg{width:100%;height:auto}
-.chart .ln{fill:none;stroke:var(--accent);stroke-width:1.6;stroke-dasharray:var(--len);stroke-dashoffset:var(--len);transition:stroke-dashoffset 2.4s var(--ease)}
-.chart.in .ln{stroke-dashoffset:0}
-.chart .area{opacity:0;transition:opacity 1.2s .9s}
-.chart.in .area{opacity:1}
-.chart .gl{stroke:var(--line);stroke-width:1}
-.chart .ax{font-family:var(--mono);font-size:10px;fill:var(--fg-3);letter-spacing:.08em}
-.rstats{display:grid;gap:20px}
+.src{display:inline-flex;flex-wrap:wrap;gap:8px 14px;align-items:center;margin-top:22px;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-2);border:1px solid var(--line-2);padding:8px 12px}
+.src b{color:var(--fg);font-weight:500}
+.results{display:grid;grid-template-columns:1.5fr 1fr;gap:20px}
+.mchart{display:flex;flex-direction:column}
+.mbars{flex:1;display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,2.4vw,26px);align-items:end;padding:26px 24px 0;min-height:300px;border-bottom:1px solid var(--line-2);margin:0 0 0}
+.mbar{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;text-align:center}
+.mbar .amt{font-family:var(--mono);font-size:clamp(11px,1.15vw,14px);color:var(--fg);font-weight:500;white-space:nowrap}
+.mbar .pct{font-family:var(--mono);font-size:11px;color:var(--fg-3);margin:4px 0 10px}
+.mbar .col{width:100%;max-width:120px;height:var(--h);background:linear-gradient(180deg,var(--accent),rgba(255,176,32,.28));transform-origin:bottom;transform:scaleY(0);transition:transform 1.2s var(--ease);transition-delay:var(--d);box-shadow:0 0 24px rgba(255,176,32,.12)}
+.mchart.in .mbar .col{transform:scaleY(1)}
+.mbar .amt,.mbar .pct{opacity:0;transition:opacity .6s;transition-delay:calc(var(--d) + .8s)}
+.mchart.in .mbar .amt,.mchart.in .mbar .pct{opacity:1}
+.mlabels{display:grid;grid-template-columns:repeat(4,1fr);gap:clamp(10px,2.4vw,26px);padding:12px 24px 0;text-align:center}
+.mlabels b{display:block;font-weight:500;font-size:15px}
+.mlabels span{font-family:var(--mono);font-size:10px;letter-spacing:.08em;color:var(--fg-3);text-transform:uppercase;display:block;line-height:1.7}
+.mnote{padding:16px 24px 20px;font-size:13.5px;color:var(--fg-3)}
+.rstats{display:grid;grid-template-columns:1fr 1fr;gap:20px}
 .rstat{padding:22px}
 .rstat .k{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
-.rstat .v{font-size:40px;font-weight:500;letter-spacing:-.04em;line-height:1;margin-top:12px}
-.rstat p{font-size:13.5px;margin-top:10px}
-.verify{display:inline-flex;margin-top:22px;font-family:var(--mono);font-size:12px;letter-spacing:.1em;text-transform:uppercase;border-bottom:1px solid var(--fg-2);padding-bottom:3px}
-.dd-note{margin-top:20px;font-size:14px;max-width:780px}
+.rstat .v{font-size:clamp(30px,3vw,40px);font-weight:500;letter-spacing:-.04em;line-height:1;margin-top:12px}
+.rstat .v.n{transition:color .6s}
+.rstat .v.counting{color:var(--accent)}
+.rstat p{font-size:13px;margin-top:10px}
+.stress{margin-top:56px}
+.stress-head{display:grid;grid-template-columns:1fr 1fr;gap:clamp(24px,5vw,64px);align-items:end;margin-bottom:28px}
+.stress-head h3{font-size:clamp(24px,2.6vw,32px);letter-spacing:-.02em;margin-top:16px}
+.stress-head p{font-size:15px}
+.tests{padding:8px 24px 18px}
+.test{padding:20px 0;border-bottom:1px solid var(--line)}
+.test:last-child{border-bottom:0}
+.test-top{display:flex;justify-content:space-between;gap:16px;align-items:baseline;margin-bottom:14px}
+.test-top b{font-weight:500;font-size:16px}
+.test-top b span{font-family:var(--mono);font-size:11px;letter-spacing:.1em;color:var(--fg-3);margin-right:10px;font-weight:400}
+.test-top em{font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--accent);white-space:nowrap}
+.tbar{display:grid;grid-template-columns:120px 1fr 92px;gap:14px;align-items:center;font-size:13.5px;color:var(--fg-2);margin-top:8px}
+.tbar .track{height:10px;background:rgba(255,255,255,.05);position:relative;overflow:hidden}
+.tbar .fill{position:absolute;inset:0 auto 0 0;width:var(--w);transform-origin:left;transform:scaleX(0);transition:transform 1.3s var(--ease);transition-delay:var(--d)}
+.tbar.off .fill{background:repeating-linear-gradient(135deg,rgba(255,255,255,.55) 0 6px,rgba(255,255,255,.3) 6px 12px)}
+.tbar.on .fill{background:var(--accent);box-shadow:0 0 12px var(--accent-glow)}
+.tests.in .tbar .fill{transform:scaleX(1)}
+.tbar .val{font-family:var(--mono);text-align:right;color:var(--fg)}
+.tbar.off .val{color:var(--fg-2)}
+.tbar.on .val{color:var(--accent)}
+.tbar .liq{letter-spacing:.06em;text-transform:uppercase;font-size:12px}
+.scale{display:grid;grid-template-columns:120px 1fr 92px;gap:14px;font-family:var(--mono);font-size:10px;color:var(--fg-3);padding-top:6px}
+.scale div{display:flex;justify-content:space-between}
+.takeaway{margin-top:20px;display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.takeaway .frame{padding:22px 24px}
+.takeaway h4{margin:0 0 8px;font-weight:500;font-size:16px;letter-spacing:-.01em}
+.takeaway p{font-size:14.5px}
+.fine{margin-top:22px;font-size:12px;line-height:1.7;color:var(--fg-3);max-width:900px}
 
 /* Testimonials carousel: one row, endless, auto-scroll + drag/swipe/scroll */
 .tcar{position:relative;overflow:hidden;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
@@ -334,7 +364,7 @@ footer{padding:56px 0 110px}
 
 /* Responsive */
 @media (max-width:980px){
-  .split,.results{grid-template-columns:1fr}
+  .split,.results,.stress-head,.takeaway{grid-template-columns:1fr}
   .engine,.cards,.paid{grid-template-columns:1fr}
   .pipe{grid-template-columns:1fr}
   .pipe-link{width:1px;height:36px;justify-self:center}
@@ -351,6 +381,17 @@ footer{padding:56px 0 110px}
   .trust div:nth-child(n+3){border-top:1px solid var(--line)}
 }
 @keyframes flowv{to{top:100%}}
+@media (max-width:640px){
+  .mbars{padding:20px 12px 0;min-height:240px}
+  .mlabels{padding:10px 12px 0}
+  .mnote{padding:14px 12px 18px}
+  .mbar .pct{font-size:10px}
+  .tests{padding:4px 14px 12px}
+  .tbar,.scale{grid-template-columns:62px 1fr 74px;gap:10px;font-size:12px}
+  .test-top{flex-direction:column;gap:4px}
+  .rstats{gap:12px}
+  .rstat{padding:18px 16px}
+}
 @media (max-width:640px){
   .status .hide-s{display:none}
   .status .sep{display:none}
@@ -595,10 +636,10 @@ footer{padding:56px 0 110px}
       <div class="eng frame rv d1">
         <span class="c1"></span><span class="c2"></span>
         <div class="viz">
-          <div class="ladder" id="ladder"><div class="eq" style="bottom:72%"><span>EQUITY</span></div></div>
-          <div class="viz-cap"><span>ENTRY</span><span>EXPOSURE SCALES WITH BALANCE</span><span>TARGET</span></div>
+          <div class="pairs" id="pairs"></div>
+          <div class="viz-cap"><span>NEWS FILTER</span><span>PAIR STATUS</span><span id="pcount">—</span></div>
         </div>
-        <div class="txt"><div class="k">Layer 02 · Risk</div><h3>Exposure, built in steps.</h3><p>Position sizes are calculated from your account balance, so risk stays proportionate whether the account grows or pulls back.</p></div>
+        <div class="txt"><div class="k">Layer 02 · Protection</div><h3>It steps aside when news hits.</h3><p>Ahead of rate decisions, interventions and other high-risk events, the news filter pauses new trades on the pairs most exposed, then re-opens them once conditions settle.</p></div>
       </div>
 
       <div class="eng frame rv d2">
@@ -655,35 +696,81 @@ footer{padding:56px 0 110px}
 </section>
 
 <!-- ===================== 05 RESULTS ===================== -->
-<section class="block">
+<!-- Source: Performance & Protection Review, Jun–Sep 2026 (account #25632094, Vantage Markets demo, live-tracked) -->
+<section class="block" id="results">
   <div class="wrap">
     <div class="sec-head">
-      <!-- EDIT: delete this flag once real verified figures are in -->
-      <div class="placeholder-flag">● Placeholder data · replace with verified figures before launch</div><br>
       <div class="eyebrow rv">05 / Performance</div>
-      <h2 class="rv d1">Don't trust us. <span class="dim">Verify us.</span></h2>
-      <p class="rv d2">Every figure here comes from a live account with an independently verified, trade-by-trade public record. Open it and check it yourself.</p>
+      <h2 class="rv d1">Four months. <span class="dim">Every month positive.</span></h2>
+      <p class="rv d2">The same engine, forward-tested from 19 June to 30 September 2026 on a $10,000 starting balance. Every trade and every day recorded, including the drawdowns.</p>
+      <div class="src rv d3"><i class="dot"></i><span>Account <b>#25632094</b></span><span>Vantage Markets</span><span>Live-tracked demo</span></div>
     </div>
 
     <div class="results">
-      <div class="chart frame rv">
+      <div class="mchart frame rv" id="mchart">
         <span class="c1"></span><span class="c2"></span>
-        <div class="frame-bar"><span class="live"><i class="dot"></i>Live account · equity growth</span><span>MMM YY – MMM YY</span></div>
-        <div class="chart-body">
-          <svg viewBox="0 0 640 300" id="chart" aria-label="Account growth chart (placeholder)">
-            <defs><linearGradient id="ag" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#ffb020" stop-opacity=".18"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></linearGradient></defs>
-          </svg>
+        <div class="frame-bar"><span class="live"><i class="dot"></i>Profit by month</span><span>% of $10,000 start</span></div>
+        <div class="mbars">
+          <div class="mbar"><span class="amt">+$889.80</span><span class="pct">8.9%</span><i class="col" style="--h:15.4%;--d:.05s"></i></div>
+          <div class="mbar"><span class="amt">+$5,789.32</span><span class="pct">57.9%</span><i class="col" style="--h:100%;--d:.2s"></i></div>
+          <div class="mbar"><span class="amt">+$2,816.13</span><span class="pct">28.2%</span><i class="col" style="--h:48.7%;--d:.35s"></i></div>
+          <div class="mbar"><span class="amt">+$1,283.93</span><span class="pct">12.8%</span><i class="col" style="--h:22.2%;--d:.5s"></i></div>
         </div>
+        <div class="mlabels">
+          <div><b>June</b><span>3 days</span><span>44 trades</span></div>
+          <div><b>July</b><span>23 days</span><span>258 trades</span></div>
+          <div><b>August</b><span>21 days</span><span>87 trades</span></div>
+          <div><b>September</b><span>22 days</span><span>47 trades</span></div>
+        </div>
+        <p class="mnote">June covers 19–30 June only. Profit fell after July as fewer trades opened. In September, that was the news filter pausing pairs ahead of major events.</p>
       </div>
       <div class="rstats">
-        <div class="rstat frame rv d1"><span class="c1"></span><span class="c2"></span><div class="k">Total gain</div><div class="v">+XX.X%</div><p>Since the account went live.</p></div>
-        <div class="rstat frame rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Win rate</div><div class="v">XX%</div><p>Share of closed trades in profit.</p></div>
-        <div class="rstat frame rv d3"><span class="c1"></span><span class="c2"></span><div class="k">Max drawdown</div><div class="v">−XX%</div><p>The deepest peak-to-trough fall the account has taken.</p></div>
+        <div class="rstat frame rv d1"><span class="c1"></span><span class="c2"></span><div class="k">Total profit</div><div class="v n">+$<span data-count="10779" data-sep="1">0</span></div><p>+107.8% on a $10,000 start, Jun–Sep.</p></div>
+        <div class="rstat frame rv d1"><span class="c1"></span><span class="c2"></span><div class="k">Trades taken</div><div class="v n"><span data-count="436">0</span></div><p>Opened, managed and closed automatically.</p></div>
+        <div class="rstat frame rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Win rate</div><div class="v n"><span data-count="75.2" data-dec="1">0</span>%</div><p>By trade, measured to 28 August.</p></div>
+        <div class="rstat frame rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Losing days</div><div class="v n"><span data-count="1">0</span><span style="font-size:.5em;color:var(--fg-3);letter-spacing:0"> / 69</span></div><p>One down day: −$11.88 on 10 September.</p></div>
       </div>
     </div>
-    <!-- EDIT: Myfxbook link -->
-    <a class="verify rv" href="#" target="_blank" rel="noopener">Verify on Myfxbook ↗</a>
-    <p class="dd-note rv"><strong style="color:var(--fg);font-weight:500">About drawdowns:</strong> every trading account has losing periods. The max drawdown above is the worst fall this account has seen. You should only ever trade with money you could afford to see drop by that amount or more.</p>
+
+    <div class="stress">
+      <div class="stress-head">
+        <div>
+          <div class="eyebrow rv">Stress-tested</div>
+          <h3 class="rv d1">What happens when the market breaks.</h3>
+        </div>
+        <p class="rv d2">Daily results only count closed trades, so the real measure of risk is <strong style="color:var(--fg);font-weight:500">open drawdown</strong>: how far an account dips while trades are still running. We ran the same strategy on two separate accounts through three real market shocks, one with the news filter and one without.</p>
+      </div>
+
+      <div class="frame rv">
+        <span class="c1"></span><span class="c2"></span>
+        <div class="frame-bar"><span class="live"><i class="dot"></i>Open drawdown · with vs without news filter</span><span>Sep – Oct 2026</span></div>
+        <div class="tests" id="tests">
+          <div class="test">
+            <div class="test-top"><b><span>3 SEP</span>Yen surge on intervention fears</b><em>Unfiltered account liquidated</em></div>
+            <div class="tbar off"><span>No filter</span><span class="track"><i class="fill" style="--w:100%;--d:.1s"></i></span><span class="val liq">Liquidated</span></div>
+            <div class="tbar on"><span>With filter</span><span class="track"><i class="fill" style="--w:.6%;--d:.3s"></i></span><span class="val">0.28%</span></div>
+          </div>
+          <div class="test">
+            <div class="test-top"><b><span>18 SEP</span>Bank of Japan hikes to 1.25%</b><em>33.06 pts less drawdown</em></div>
+            <div class="tbar off"><span>No filter</span><span class="track"><i class="fill" style="--w:45.5%;--d:.45s"></i></span><span class="val">45.50%</span></div>
+            <div class="tbar on"><span>With filter</span><span class="track"><i class="fill" style="--w:12.44%;--d:.65s"></i></span><span class="val">12.44%</span></div>
+          </div>
+          <div class="test">
+            <div class="test-top"><b><span>12 OCT</span>16 of 18 pairs paused</b><em>33.87 pts less drawdown</em></div>
+            <div class="tbar off"><span>No filter</span><span class="track"><i class="fill" style="--w:51.58%;--d:.8s"></i></span><span class="val">51.58%</span></div>
+            <div class="tbar on"><span>With filter</span><span class="track"><i class="fill" style="--w:17.71%;--d:1s"></i></span><span class="val">17.71%</span></div>
+          </div>
+          <div class="scale"><span></span><div><span>0%</span><span>50%</span><span>100%</span></div><span></span></div>
+        </div>
+      </div>
+
+      <div class="takeaway">
+        <div class="frame rv"><span class="c1"></span><span class="c2"></span><h4>What the record shows</h4><p>In every test, the filtered account carried about a third of the unfiltered drawdown or less. In the first, the unfiltered account was wiped out in nine minutes.</p></div>
+        <div class="frame rv d1"><span class="c1"></span><span class="c2"></span><h4>What protection costs</h4><p>Paused pairs open no new trades, so losing positions stay open longer. The filtered account still reached 17.71% open drawdown on 12 October. Only trade money you could afford to see fall that far, or further.</p></div>
+      </div>
+    </div>
+
+    <p class="fine rv">Monthly results are from account #25632094, a live-tracked demo account at Vantage Markets. Demo results do not reflect every real-money factor, such as slippage and execution delays, and live results may differ. The news-filter tests ran on separate accounts from the monthly results. Market context from CNBC, Japan Times and Euronews. Past performance is not indicative of future results. Capital at risk.</p>
   </div>
 </section>
 
@@ -758,7 +845,7 @@ footer{padding:56px 0 110px}
       <h2 class="rv d1">Questions people <span class="dim">always ask.</span></h2>
     </div>
     <div class="faq rv">
-      <details><summary>Is this legit, or is it a scam?<span class="pm">+</span></summary><div class="ans">Fair question in this industry. Your money never comes to us. It stays in your own regulated broker account, in your name, and you can withdraw it at any time. Our results come from live accounts with public, independently verified trade histories that you can check yourself.</div></details>
+      <details><summary>Is this legit, or is it a scam?<span class="pm">+</span></summary><div class="ans">Fair question in this industry. Your money never comes to us. It stays in your own regulated broker account, in your name, and you can withdraw it at any time. We publish our tracked performance month by month, including the drawdowns and the one losing day, not just the wins.</div></details>
       <details><summary>Can I lose money?<span class="pm">+</span></summary><div class="ans">Yes. Forex trading carries real risk, losing periods are a normal part of how any system trades, and past performance does not guarantee future results. Only use money you can afford to lose.</div></details>
       <details><summary>Do I need any trading experience?<span class="pm">+</span></summary><div class="ans">No. The software handles analysis, entries, exits and risk management. You don't need to read charts or place trades. We'll walk you through setup on the call.</div></details>
       <details><summary>Who holds my money?<span class="pm">+</span></summary><div class="ans">You do. Funds stay in your own account with the broker. The software can place trades on that account but has no ability to withdraw or move money.</div></details>
@@ -824,9 +911,11 @@ document.querySelectorAll('h1,h2').forEach(h=>{
 /* ---- Reveal + counters ---- */
 const count = el=>{
   const to=+el.dataset.count, dur=1400, t0=performance.now();
-  if(to===0||RM){el.textContent=to;return}
-  const box=el.closest('.n');box&&box.classList.add('counting');
-  const step=t=>{const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3);el.textContent=Math.round(to*e);if(p<1)requestAnimationFrame(step);else box&&setTimeout(()=>box.classList.remove('counting'),300)};
+  const box=el.closest('.n');
+  if(to===0||RM){el.textContent=el.dataset.sep?Number(to).toLocaleString('en-US'):to;return}
+  box&&box.classList.add('counting');
+  const dec=+(el.dataset.dec||0),sep=!!el.dataset.sep;const fmt=v=>{const r=dec?v.toFixed(dec):String(Math.round(v));return sep?Number(r).toLocaleString('en-US',{minimumFractionDigits:dec,maximumFractionDigits:dec}):r};
+  const step=t=>{const p=Math.min(1,(t-t0)/dur), e=1-Math.pow(1-p,3);el.textContent=fmt(to*e);if(p<1)requestAnimationFrame(step);else{el.textContent=fmt(to);box&&setTimeout(()=>box.classList.remove('counting'),300)}};
   requestAnimationFrame(step);
 };
 const io=new IntersectionObserver(es=>es.forEach(e=>{
@@ -836,7 +925,7 @@ const io=new IntersectionObserver(es=>es.forEach(e=>{
   if(e.target.matches('[data-count]'))count(e.target);
   io.unobserve(e.target);
 }),{threshold:.15,rootMargin:'0px 0px -40px 0px'});
-document.querySelectorAll('.rv,.eng,.chart,.pipe').forEach(el=>io.observe(el));
+document.querySelectorAll('.rv,.eng,.mchart,.pipe,#tests').forEach(el=>io.observe(el));
 
 /* ---- Scroll-linked motion: progress bar, hero parallax, VSL lift ---- */
 const prog=document.createElement('div');prog.id='progress';document.body.appendChild(prog);
@@ -913,29 +1002,23 @@ const meterIO=new IntersectionObserver(([e])=>{if(e.isIntersecting&&!meterOn){me
   setInterval(upd,2200)}},{threshold:.35});
 meterIO.observe(meter);
 
-/* ---- Engine: exposure ladder ---- */
-const lad=document.getElementById('ladder');
-[18,26,34,42,52,60,70,80,90].forEach((h,i)=>{const b=document.createElement('i');b.style.height=h+'%';b.style.transitionDelay=(.15+i*.11)+'s';lad.appendChild(b)});
+/* ---- Engine: news filter pair board (illustrative) ---- */
+const PAIRS=['EURUSD','GBPUSD','USDJPY','AUDUSD','USDCAD','NZDUSD','EURJPY','GBPCHF','AUDNZD','USDCHF'];
+const pairsEl=document.getElementById('pairs'),pcount=document.getElementById('pcount');
+pairsEl.innerHTML=PAIRS.map(p=>`<div class="pair"><span>${p}</span><s>TRADING</s></div>`).join('');
+const prow=[...pairsEl.children];
+const EVENTS=[['USD'],['JPY'],['EUR'],['GBP'],['CAD'],['USD','JPY'],[]];
+let ev=0;
+const pupd=()=>{const hit=EVENTS[ev%EVENTS.length];ev++;let n=0;
+  prow.forEach((r,i)=>{const pz=hit.some(c=>PAIRS[i].includes(c));r.classList.toggle('paused',pz);r.querySelector('s').textContent=pz?'PAUSED':'TRADING';if(pz)n++});
+  pcount.textContent=n?`${n} PAUSED`:'ALL CLEAR'};
+pupd();if(!RM)setInterval(pupd,3200);
 
 /* ---- Engine: execution log (illustrative) ---- */
 const log=document.getElementById('log');
 const lines=['> system.boot','  cloud node .......... <span class="ok">online</span>','  broker link ......... <span class="ok">secure</span>','> feed.subscribe fx_majors','  stream .............. <span class="ok">live</span>','> rules.evaluate','  signal .............. none','  signal .............. none','  signal .............. <span class="ok">match</span>','> risk.size → equity-scaled','> order.route','  status .............. <span class="ok">filled</span>','> monitor.positions'];
 let li=0;const addLine=()=>{log.innerHTML=lines.slice(Math.max(0,li-8),li+1).join('<br>')+'<br><span class="cur"></span>';li=(li+1)%lines.length;if(li===0)setTimeout(()=>{},0)};
 addLine();if(!RM)setInterval(addLine,900);else log.innerHTML=lines.slice(0,9).join('<br>');
-
-/* ---- Results chart (PLACEHOLDER curve) ---- */
-const svg=document.getElementById('chart'),NS='http://www.w3.org/2000/svg',W2=640,H2=300,L=44,R=12,T=14,B=30;
-for(let i=0;i<=4;i++){const y=T+(H2-T-B)*i/4;const g=document.createElementNS(NS,'line');g.setAttribute('x1',L);g.setAttribute('x2',W2-R);g.setAttribute('y1',y);g.setAttribute('y2',y);g.setAttribute('class','gl');svg.appendChild(g);
-  const t=document.createElementNS(NS,'text');t.setAttribute('x',0);t.setAttribute('y',y+3);t.setAttribute('class','ax');t.textContent=['+XX%','+XX%','+XX%','+XX%','0%'][i];svg.appendChild(t)}
-['M1','M2','M3','M4','M5','M6'].forEach((m,i)=>{const t=document.createElementNS(NS,'text');t.setAttribute('x',L+(W2-L-R)*i/5-(i===5?18:0));t.setAttribute('y',H2-8);t.setAttribute('class','ax');t.textContent=m;svg.appendChild(t)});
-let s=7;const rnd=()=>(s=(s*16807)%2147483647)/2147483647;
-const N=90;let v=0;const pts=[];for(let i=0;i<N;i++){const dd=(i>48&&i<60)?-.9:.55;v+=dd+(rnd()-.45)*2.2;v=Math.max(0,v);pts.push(v)}
-const mx=Math.max(...pts);const P=pts.map((p,i)=>[L+(W2-L-R)*i/(N-1),T+(H2-T-B)*(1-p/mx)]);
-const d='M'+P.map(p=>p.map(n=>n.toFixed(1)).join(',')).join('L');
-const area=document.createElementNS(NS,'path');area.setAttribute('d',d+`L${W2-R},${H2-B}L${L},${H2-B}Z`);area.setAttribute('fill','url(#ag)');area.setAttribute('class','area');svg.appendChild(area);
-const ln=document.createElementNS(NS,'path');ln.setAttribute('d',d);ln.setAttribute('class','ln');svg.appendChild(ln);
-ln.style.setProperty('--len',Math.ceil(ln.getTotalLength()));
-const last=P[P.length-1],c=document.createElementNS(NS,'circle');c.setAttribute('cx',last[0]);c.setAttribute('cy',last[1]);c.setAttribute('r',3.5);c.setAttribute('fill','#ffb020');svg.appendChild(c);
 
 /* ---- Testimonials carousel (endless, two rows, opposite directions) ---- */
 // EDIT: file names must match the images/ folder in the repo exactly
