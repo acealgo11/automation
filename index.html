@@ -28,8 +28,8 @@
   --line:rgba(255,255,255,.08);
   --line-2:rgba(255,255,255,.16);
   --fg:#fafafa;
-  --fg-2:#a3a3a3;
-  --fg-3:#6b6b6b;
+  --fg-2:#c2c2c2;
+  --fg-3:#8c8c8c;
   --accent:#ffb020;
   --accent-glow:rgba(255,176,32,.55);
   --sans:"Geist","Helvetica Neue",Arial,sans-serif;
@@ -218,6 +218,28 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .log{position:absolute;inset:0;padding:18px;font-family:var(--mono);font-size:11.5px;line-height:1.9;color:var(--fg-2);overflow:hidden}
 .log .ok{color:var(--accent)}
 .log .cur{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(1) infinite}
+
+/* Light (inverted) sections */
+.light{--bg:#f5f5f3;--bg-1:#ffffff;--bg-2:#ececea;--line:rgba(0,0,0,.09);--line-2:rgba(0,0,0,.2);--fg:#0b0b0b;--fg-2:#363636;--fg-3:#6a6a6a;--accent:#e09400;--accent-glow:rgba(224,148,0,.35);--ink:#a86a00;background:var(--bg);color:var(--fg)}
+section.block.light{border-bottom-color:var(--line)}
+.light .pipe-link::after{background:linear-gradient(90deg,transparent,#0b0b0b)}
+@media (max-width:980px){.light .pipe-link::after{background:linear-gradient(180deg,transparent,#0b0b0b)}}
+.light .fit li::before{color:var(--ink)}
+.light .fit .yes{background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.04),0 20px 50px -30px rgba(0,0,0,.25)}
+.light .card{background:#fff}
+.light .paid .card .big{color:var(--fg)}
+.light .idx{color:var(--ink)}
+.light .not .tag{background:#0b0b0b;color:#fff;border-color:#0b0b0b}
+.light .eyebrow{color:var(--fg-2)}
+/* Light band joined across two sections */
+.light+.light{border-top:0}
+.light.join{padding-bottom:clamp(40px,6vw,70px)}
+.light.join+.light{padding-top:clamp(40px,6vw,70px)}
+
+/* Highlighter on key phrases: sweeps in on reveal */
+.hl{color:var(--fg);font-weight:500;background-image:linear-gradient(transparent 64%,rgba(255,176,32,.55) 64%,rgba(255,176,32,.55) 90%,transparent 90%);background-repeat:no-repeat;background-size:0% 100%;transition:background-size 1s var(--ease) .5s;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 2px}
+.in .hl,.hl.in{background-size:100% 100%}
+.light .hl{background-image:linear-gradient(transparent 55%,rgba(255,176,32,.55) 55%,rgba(255,176,32,.55) 92%,transparent 92%)}
 
 /* Steps: vertical timeline accordion */
 .steps{padding:6px clamp(16px,3vw,28px)}
@@ -584,7 +606,7 @@ footer{padding:56px 0 110px}
       <!-- EDIT: headline -->
       <h1 class="rv d1">The market never sleeps.<span class="dim">Neither does the system.</span></h1>
       <!-- EDIT: subheadline -->
-      <p class="lede rv d2">Ace Automation connects rules-based trading software to <strong style="color:var(--fg);font-weight:500">your own broker account</strong> and executes 24 hours a day, five days a week. No charts, no emotion, no guesswork. <span class="hide-m">Watch the breakdown below, then book a call to see if it's right for you.</span></p>
+      <p class="lede rv d2">Ace Automation connects rules-based trading software to <span class="hl">your own broker account</span> and executes 24 hours a day, five days a week. No charts, no emotion, no guesswork. <span class="hide-m">Watch the breakdown below, then book a call to see if it's right for you.</span></p>
     </div>
 
     <div class="vsl rv d3">
@@ -680,12 +702,12 @@ footer{padding:56px 0 110px}
 </section>
 
 <!-- ===================== 02 EDUCATION ===================== -->
-<section class="block">
+<section class="block light">
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow rv">02 / The basics</div>
       <h2 class="rv d1">What is algorithmic trading?</h2>
-      <p class="lede rv d2">In plain English: it's software that follows a fixed set of trading rules automatically. It reads market data, decides whether the rules say to act, and places the order on your account. No one is sitting there clicking buttons.</p>
+      <p class="lede rv d2">In plain English: it's software that follows a fixed set of trading rules automatically. It reads market data, decides whether the rules say to act, and places the order on your account. <span class="hl">No one is sitting there clicking buttons.</span></p>
     </div>
 
     <div class="pipe rv">
@@ -769,7 +791,7 @@ footer{padding:56px 0 110px}
       <div class="step" data-i="1">
         <span class="node">02</span><span class="seg"><i></i></span>
         <button type="button" class="step-head" aria-expanded="false" aria-controls="step-b1"><span><b>Open your account</b><em>Your name · Your funds</em></span><span class="pm">+</span></button>
-        <div class="step-body" id="step-b1"><div class="step-in"><div class="step-grid"><p>You open and fund an account with our partner broker. The money stays in your account at all times. We never hold it, and we can't withdraw it.</p><!-- EDIT: confirm broker + minimum --><div class="specs"><div><div class="k">Broker</div><div class="v">Vantage</div></div><div><div class="k">Minimum</div><div class="v">£X,XXX</div></div><div><div class="k">Time</div><div class="v">~10 min</div></div></div></div></div></div>
+        <div class="step-body" id="step-b1"><div class="step-in"><div class="step-grid"><p>You open and fund an account with our partner broker. <span class="hl">The money stays in your account at all times.</span> We never hold it, and we can't withdraw it.</p><!-- EDIT: confirm broker + minimum --><div class="specs"><div><div class="k">Broker</div><div class="v">Vantage</div></div><div><div class="k">Minimum</div><div class="v">£X,XXX</div></div><div><div class="k">Time</div><div class="v">~10 min</div></div></div></div></div></div>
       </div>
       <div class="step" data-i="2">
         <span class="node">03</span><span class="seg"><i></i></span>
@@ -882,7 +904,7 @@ footer{padding:56px 0 110px}
 <div class="lb" id="lb" role="dialog" aria-label="Testimonial"><span class="x">Close ✕</span><img alt=""></div>
 
 <!-- ===================== 07 FIT ===================== -->
-<section class="block">
+<section class="block light join">
   <div class="wrap">
     <div class="sec-head center">
       <div class="eyebrow rv">07 / Is it for you</div>
@@ -914,7 +936,7 @@ footer{padding:56px 0 110px}
 </section>
 
 <!-- ===================== 08 TRANSPARENCY ===================== -->
-<section class="block">
+<section class="block light">
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow rv">08 / Pricing</div>
@@ -922,9 +944,9 @@ footer{padding:56px 0 110px}
     </div>
     <!-- EDIT: confirm pricing model wording -->
     <div class="paid">
-      <div class="card rv"><div class="idx">01 · Licence</div><div class="big">Fixed</div><h3>One clear fee</h3><p>You pay a fixed fee to license the software. No share of your profits, no surprise charges. We'll take you through pricing on the call.</p></div>
+      <div class="card rv"><div class="idx">01 · Licence</div><div class="big">Fixed</div><h3>One clear fee</h3><p>You pay a fixed fee to license the software. <span class="hl">No share of your profits, no surprise charges.</span> We'll take you through pricing on the call.</p></div>
       <div class="card rv d1"><div class="idx">02 · Control</div><div class="big">Anytime</div><h3>Disconnect when you like</h3><p>No lock-in. You can switch the software off on your account whenever you choose.</p></div>
-      <div class="card rv d2"><div class="idx">03 · Your funds</div><div class="big">£0</div><h3>Held by us</h3><p>Your money sits in your own broker account, in your name. We can place trades through the software. We can't withdraw a penny.</p></div>
+      <div class="card rv d2"><div class="idx">03 · Your funds</div><div class="big">£0</div><h3>Held by us</h3><p>Your money sits in your own broker account, in your name. We can place trades through the software. <span class="hl">We can't withdraw a penny.</span></p></div>
     </div>
   </div>
 </section>
@@ -940,7 +962,7 @@ footer{padding:56px 0 110px}
       <details><summary>Is this legit, or is it a scam?<span class="pm">+</span></summary><div class="ans">Fair question in this industry. Your money never comes to us. It stays in your own regulated broker account, in your name, and you can withdraw it at any time. We publish our tracked performance month by month, including the drawdowns and the one losing day, not just the wins.</div></details>
       <details><summary>Can I lose money?<span class="pm">+</span></summary><div class="ans">Yes. Forex trading carries real risk, losing periods are a normal part of how any system trades, and past performance does not guarantee future results. Only use money you can afford to lose.</div></details>
       <details><summary>Do I need any trading experience?<span class="pm">+</span></summary><div class="ans">No. The software handles analysis, entries, exits and risk management. You don't need to read charts or place trades. We'll walk you through setup on the call.</div></details>
-      <details><summary>Who holds my money?<span class="pm">+</span></summary><div class="ans">You do. Funds stay in your own account with the broker. The software can place trades on that account but has no ability to withdraw or move money.</div></details>
+      <details><summary>Who holds my money?<span class="pm">+</span></summary><div class="ans"><span class="hl in">You do.</span> Funds stay in your own account with the broker. The software can place trades on that account but has no ability to withdraw or move money.</div></details>
       <!-- EDIT: confirm minimum -->
       <details><summary>How much do I need to start?<span class="pm">+</span></summary><div class="ans">The minimum account balance is £X,XXX. Start with an amount you're comfortable with, because you can always add more later.</div></details>
       <details><summary>Do I need to keep my computer on?<span class="pm">+</span></summary><div class="ans">No. The system runs on cloud servers, so it keeps working whether your computer is on, off, or you're on holiday.</div></details>
