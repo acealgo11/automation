@@ -226,6 +226,12 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .frame.light::before,.frame.light::after,.frame.light>.c1,.frame.light>.c2{border-color:var(--accent)}
 .cards.inv,.paid.inv{gap:14px;background:none;border:0}
 .paid .card.light .big{color:var(--fg)}
+.light .tbar .track{background:rgba(0,0,0,.07)}
+.light .tbar.off .fill{background:repeating-linear-gradient(135deg,rgba(0,0,0,.55) 0 6px,rgba(0,0,0,.3) 6px 12px)}
+.light .tbar.on .val,.light .test-top em{color:var(--ink)}
+.light .mbar .col{background:linear-gradient(180deg,#ffa800,rgba(255,168,0,.45));box-shadow:none}
+.light .mbars{border-bottom-color:var(--line-2)}
+.rstat.light .v.counting{color:var(--ink)}
 
 /* Highlighter on key phrases: sweeps in on reveal */
 .hl{color:var(--fg);font-weight:500;background-image:linear-gradient(transparent 64%,rgba(255,176,32,.55) 64%,rgba(255,176,32,.55) 90%,transparent 90%);background-repeat:no-repeat;background-size:0% 100%;transition:background-size 1s var(--ease) .5s;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 2px}
@@ -810,7 +816,7 @@ footer{padding:56px 0 110px}
     </div>
 
     <div class="results">
-      <div class="mchart frame rv" id="mchart">
+      <div class="mchart frame light rv" id="mchart">
         <span class="c1"></span><span class="c2"></span>
         <div class="frame-bar"><span class="live"><i class="dot"></i>Profit by month</span><span>% of $10,000 start</span></div>
         <div class="mbars">
@@ -828,10 +834,10 @@ footer{padding:56px 0 110px}
         <p class="mnote">June covers 19–30 June only. Profit fell after July as fewer trades opened. In September, that was the news filter pausing pairs ahead of major events.</p>
       </div>
       <div class="rstats">
-        <div class="rstat frame rv d1"><span class="c1"></span><span class="c2"></span><div class="k">Total profit</div><div class="v n">+$<span data-count="10779" data-sep="1">0</span></div><p>+107.8% on a $10,000 start, Jun–Sep.</p></div>
-        <div class="rstat frame rv d1"><span class="c1"></span><span class="c2"></span><div class="k">Trades taken</div><div class="v n"><span data-count="436">0</span></div><p>Opened, managed and closed automatically.</p></div>
-        <div class="rstat frame rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Win rate</div><div class="v n"><span data-count="75.2" data-dec="1">0</span>%</div><p>By trade, measured to 28 August.</p></div>
-        <div class="rstat frame rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Losing days</div><div class="v n"><span data-count="1">0</span><span style="font-size:.42em;color:var(--fg-3);letter-spacing:0"> in 4 months</span></div><p>−$11.88 on 10 September. The other 52 days with closed trades finished in profit.</p></div>
+        <div class="rstat frame light rv d1"><span class="c1"></span><span class="c2"></span><div class="k">Total profit</div><div class="v n">+$<span data-count="10779" data-sep="1">0</span></div><p>+107.8% on a $10,000 start, Jun–Sep.</p></div>
+        <div class="rstat frame light rv d1"><span class="c1"></span><span class="c2"></span><div class="k">Trades taken</div><div class="v n"><span data-count="436">0</span></div><p>Opened, managed and closed automatically.</p></div>
+        <div class="rstat frame light rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Win rate</div><div class="v n"><span data-count="75.2" data-dec="1">0</span>%</div><p>By trade, measured to 28 August.</p></div>
+        <div class="rstat frame light rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Losing days</div><div class="v n"><span data-count="1">0</span><span style="font-size:.42em;color:var(--fg-3);letter-spacing:0"> in 4 months</span></div><p>−$11.88 on 10 September. The other 52 days with closed trades finished in profit.</p></div>
       </div>
     </div>
 
@@ -846,7 +852,7 @@ footer{padding:56px 0 110px}
         <p class="rv d2">Daily results only count closed trades, so the real measure of risk is <strong style="color:var(--fg);font-weight:500">open drawdown</strong>: how far an account dips while trades are still running. We ran the same strategy on two separate accounts through three real market shocks, one with the news filter and one without.</p>
       </div>
 
-      <div class="frame rv">
+      <div class="frame light rv">
         <span class="c1"></span><span class="c2"></span>
         <div class="frame-bar"><span class="live"><i class="dot"></i>Open drawdown · with vs without news filter</span><span>Sep – Oct 2026</span></div>
         <div class="tests" id="tests">
