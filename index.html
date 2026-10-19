@@ -290,6 +290,84 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .takeaway p{font-size:14.5px}
 .fine{margin-top:22px;font-size:12px;line-height:1.7;color:var(--fg-3);max-width:900px}
 
+/* Performance breakdown modal */
+.openrow{display:flex;flex-wrap:wrap;align-items:center;gap:14px 20px;margin-top:22px}
+.openrow .mono{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3)}
+.openrow .btn:hover{border-color:var(--accent);color:var(--accent)}
+.mbar{cursor:pointer}
+.mbar:hover .col,.mbar:focus-visible .col{filter:brightness(1.18)}
+.mbar:focus-visible{outline:1px dashed var(--accent);outline-offset:4px}
+dialog.perf{padding:0;border:1px solid var(--line-2);background:var(--bg-1);color:var(--fg);width:min(1080px,calc(100vw - 32px));max-height:calc(100dvh - 32px);overflow:hidden;display:none;flex-direction:column}
+dialog.perf[open]{display:flex;animation:dlg .35s var(--ease)}
+dialog.perf::backdrop{background:rgba(0,0,0,.82);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+@keyframes dlg{from{opacity:0;transform:translateY(14px) scale(.985)}to{opacity:1;transform:none}}
+.pf-top{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 18px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-2)}
+.pf-top .live{display:inline-flex;align-items:center;gap:10px}
+.pf-x{white-space:nowrap;flex:none;appearance:none;background:none;border:1px solid var(--line-2);color:var(--fg);font:inherit;letter-spacing:.12em;padding:7px 12px;cursor:pointer}
+.pf-x:hover{border-color:var(--accent);color:var(--accent)}
+.pf-tabs{display:grid;grid-template-columns:repeat(4,1fr);border-bottom:1px solid var(--line)}
+.pf-tab{appearance:none;background:none;border:0;border-left:1px solid var(--line);color:var(--fg-3);font:inherit;text-align:left;padding:14px 18px;cursor:pointer;position:relative;transition:background .2s,color .2s}
+.pf-tab:first-child{border-left:0}
+.pf-tab b{display:block;font-weight:500;font-size:16px;letter-spacing:-.01em}
+.pf-tab span{font-family:var(--mono);font-size:12px}
+.pf-tab[aria-selected="true"]{color:var(--fg);background:var(--bg-2)}
+.pf-tab[aria-selected="true"] span{color:var(--accent)}
+.pf-tab[aria-selected="true"]::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:2px;background:var(--accent)}
+.pf-body{overflow:auto;padding:22px;display:grid;grid-template-columns:1.25fr 1fr;gap:22px;overscroll-behavior:contain}
+.cal-head{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+.cal-head h3{font-size:22px;letter-spacing:-.02em}
+.cal-head span{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)}
+.cal{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px}
+.cal .dow{font-family:var(--mono);font-size:10px;letter-spacing:.12em;color:var(--fg-3);text-align:center;padding-bottom:4px}
+.cal .d{aspect-ratio:1/.82;border:1px solid var(--line);background:rgba(255,255,255,.015);padding:6px 7px;display:flex;flex-direction:column;justify-content:space-between;font-family:var(--mono);opacity:0;transform:translateY(6px);animation:cell .45s var(--ease) forwards;animation-delay:calc(var(--i) * 14ms)}
+.cal .d.pad{border-color:transparent;background:none}
+.cal .d .n{font-size:10px;color:var(--fg-3)}
+.cal .d{min-width:0;overflow:hidden}
+.cal .d .p{font-size:11.5px;color:var(--fg);white-space:nowrap}
+.cal .d.win{border-color:rgba(255,176,32,calc(.25 + var(--a) * .55));background:rgba(255,176,32,calc(.04 + var(--a) * .26))}
+.cal .d.win .p{color:#ffd27a}
+.cal .d.loss{border-color:rgba(255,99,82,.5);background:rgba(255,99,82,.08)}
+.cal .d.loss .p{color:#ff8a7a}
+.cal .d.best{box-shadow:0 0 0 1px var(--accent),0 0 18px rgba(255,176,32,.25)}
+@keyframes cell{to{opacity:1;transform:none}}
+.cal-legend{display:flex;gap:16px;flex-wrap:wrap;margin-top:12px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3)}
+.cal-legend i{display:inline-block;width:10px;height:10px;margin-right:6px;vertical-align:-1px}
+.pf-stats{display:grid;grid-template-columns:1fr 1fr 1fr;border:1px solid var(--line)}
+.pf-stats>div{padding:14px;border-left:1px solid var(--line);border-top:1px solid var(--line);min-width:0}
+.pf-stats>div:nth-child(3n+2){border-left:0}
+.pf-stats>div.wide{border-top:0}
+.pf-stats .k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
+.pf-stats .v{font-size:19px;font-weight:500;letter-spacing:-.02em;margin-top:6px;font-variant-numeric:tabular-nums}
+.pf-stats .v.neg{color:#ff8a7a}
+.pf-stats .wide{grid-column:1 / -1;border-left:0!important}
+.pf-stats .wide .v{font-size:26px;color:var(--accent)}
+.pf-notes{display:grid;gap:12px;margin-top:14px}
+.pf-note{border-left:2px solid var(--accent);padding:12px 14px;background:rgba(255,255,255,.02)}
+.pf-note h4{margin:0 0 6px;font-size:14px;font-weight:500}
+.pf-note p{font-size:13.5px;line-height:1.6}
+.pf-note .vs2{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.pf-note .vs2 div{border:1px solid var(--line);padding:8px 10px;font-family:var(--mono);font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3)}
+.pf-note .vs2 b{display:block;font-size:15px;letter-spacing:0;text-transform:none;margin-top:3px;font-weight:500}
+.pf-note .vs2 .bad b{color:var(--fg-2)}
+.pf-note .vs2 .good b{color:var(--accent)}
+.pf-foot{grid-column:1 / -1;padding-top:14px;border-top:1px solid var(--line);font-size:12px;color:var(--fg-3);line-height:1.6}
+@media (max-width:860px){
+  dialog.perf{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border:0}
+  .pf-body{grid-template-columns:1fr;padding:16px}
+  .pf-tab{padding:11px 8px;min-width:0}
+  .pf-tab b{font-size:13px}
+  .pf-tab span{font-size:9.5px;letter-spacing:-.02em}
+  .cal{gap:3px}
+  .cal .d{padding:4px 4px;aspect-ratio:1/1.05}
+  .cal .d .p{font-size:9px}
+  .cal .dow{font-size:9px;letter-spacing:.04em}
+  .pf-stats .v{font-size:16px}
+  .cal-head span{display:none}
+  .pf-top{padding:10px 12px}
+  .pf-top .live{font-size:10px}
+  .pf-foot{font-size:11px}
+}
+
 /* Testimonials carousel: one row, endless, auto-scroll + drag/swipe/scroll */
 .tcar{position:relative;overflow:hidden;cursor:grab;touch-action:pan-y;user-select:none;-webkit-user-select:none;-webkit-mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent);mask-image:linear-gradient(90deg,transparent,#000 6%,#000 94%,transparent)}
 .tcar.dragging{cursor:grabbing}
@@ -702,7 +780,7 @@ footer{padding:56px 0 110px}
     <div class="sec-head">
       <div class="eyebrow rv">05 / Performance</div>
       <h2 class="rv d1">Four months. <span class="dim">Every month positive.</span></h2>
-      <p class="rv d2">The same engine, forward-tested from 19 June to 30 September 2026 on a $10,000 starting balance. Every trade and every day recorded, including the drawdowns.</p>
+      <p class="rv d2">The same engine, tracked from 19 June to 30 September 2026 on a $10,000 starting balance. Every trade and every day recorded, including the drawdowns.</p>
       <div class="src rv d3"><i class="dot"></i><span>Account <b>#25632094</b></span><span>Vantage Markets</span><span>Live-tracked demo</span></div>
     </div>
 
@@ -711,10 +789,10 @@ footer{padding:56px 0 110px}
         <span class="c1"></span><span class="c2"></span>
         <div class="frame-bar"><span class="live"><i class="dot"></i>Profit by month</span><span>% of $10,000 start</span></div>
         <div class="mbars">
-          <div class="mbar"><span class="amt">+$889.80</span><span class="pct">8.9%</span><i class="col" style="--h:15.4%;--d:.05s"></i></div>
-          <div class="mbar"><span class="amt">+$5,789.32</span><span class="pct">57.9%</span><i class="col" style="--h:100%;--d:.2s"></i></div>
-          <div class="mbar"><span class="amt">+$2,816.13</span><span class="pct">28.2%</span><i class="col" style="--h:48.7%;--d:.35s"></i></div>
-          <div class="mbar"><span class="amt">+$1,283.93</span><span class="pct">12.8%</span><i class="col" style="--h:22.2%;--d:.5s"></i></div>
+          <div class="mbar" role="button" tabindex="0"><span class="amt">+$889.80</span><span class="pct">8.9%</span><i class="col" style="--h:15.4%;--d:.05s"></i></div>
+          <div class="mbar" role="button" tabindex="0"><span class="amt">+$5,789.32</span><span class="pct">57.9%</span><i class="col" style="--h:100%;--d:.2s"></i></div>
+          <div class="mbar" role="button" tabindex="0"><span class="amt">+$2,816.13</span><span class="pct">28.2%</span><i class="col" style="--h:48.7%;--d:.35s"></i></div>
+          <div class="mbar" role="button" tabindex="0"><span class="amt">+$1,283.93</span><span class="pct">12.8%</span><i class="col" style="--h:22.2%;--d:.5s"></i></div>
         </div>
         <div class="mlabels">
           <div><b>June</b><span>3 days</span><span>44 trades</span></div>
@@ -728,9 +806,11 @@ footer{padding:56px 0 110px}
         <div class="rstat frame rv d1"><span class="c1"></span><span class="c2"></span><div class="k">Total profit</div><div class="v n">+$<span data-count="10779" data-sep="1">0</span></div><p>+107.8% on a $10,000 start, Jun–Sep.</p></div>
         <div class="rstat frame rv d1"><span class="c1"></span><span class="c2"></span><div class="k">Trades taken</div><div class="v n"><span data-count="436">0</span></div><p>Opened, managed and closed automatically.</p></div>
         <div class="rstat frame rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Win rate</div><div class="v n"><span data-count="75.2" data-dec="1">0</span>%</div><p>By trade, measured to 28 August.</p></div>
-        <div class="rstat frame rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Losing days</div><div class="v n"><span data-count="1">0</span><span style="font-size:.5em;color:var(--fg-3);letter-spacing:0"> / 69</span></div><p>One down day: −$11.88 on 10 September.</p></div>
+        <div class="rstat frame rv d2"><span class="c1"></span><span class="c2"></span><div class="k">Losing days</div><div class="v n"><span data-count="1">0</span><span style="font-size:.42em;color:var(--fg-3);letter-spacing:0"> in 4 months</span></div><p>−$11.88 on 10 September. The other 52 days with closed trades finished in profit.</p></div>
       </div>
     </div>
+
+    <div class="openrow rv"><button type="button" class="btn btn-ghost" id="openPerf" data-m="1">View the full daily breakdown <span class="arr">→</span></button><span class="mono">Every day, every month · tap any bar to jump in</span></div>
 
     <div class="stress">
       <div class="stress-head">
@@ -887,6 +967,13 @@ footer{padding:56px 0 110px}
   </div>
 </footer>
 
+<dialog class="perf" id="perf" aria-labelledby="pfTitle">
+  <div class="pf-top"><span class="live" id="pfTitle"><i class="dot"></i>Daily breakdown<span class="hide-m">&nbsp;· Jun – Sep 2026</span></span><button type="button" class="pf-x" id="pfClose" aria-label="Close">Close ✕</button></div>
+  <div class="pf-tabs" role="tablist" id="pfTabs"></div>
+  <div class="pf-body" id="pfBody"></div>
+  <template id="pfFoot">Calendars show closed trades only. A trade still open at a loss doesn't appear until it closes, which is why open drawdown (shown in the stress tests) is the real measure of risk. Win rate here is by day. Past performance is not indicative of future results. Capital at risk.</template>
+</dialog>
+
 <div class="sticky" id="sticky"><a href="#apply"><span>Book your call</span><span>↑</span></a></div>
 
 <!-- ===== Booking form: GoHighLevel ===== -->
@@ -1019,6 +1106,59 @@ const log=document.getElementById('log');
 const lines=['> system.boot','  cloud node .......... <span class="ok">online</span>','  broker link ......... <span class="ok">secure</span>','> feed.subscribe fx_majors','  stream .............. <span class="ok">live</span>','> rules.evaluate','  signal .............. none','  signal .............. none','  signal .............. <span class="ok">match</span>','> risk.size → equity-scaled','> order.route','  status .............. <span class="ok">filled</span>','> monitor.positions'];
 let li=0;const addLine=()=>{log.innerHTML=lines.slice(Math.max(0,li-8),li+1).join('<br>')+'<br><span class="cur"></span>';li=(li+1)%lines.length;if(li===0)setTimeout(()=>{},0)};
 addLine();if(!RM)setInterval(addLine,900);else log.innerHTML=lines.slice(0,9).join('<br>');
+
+const DAILY={"2026-06":{"26":273.43,"29":312.33,"30":304.04},"2026-07":{"1":201.36,"2":155.84,"6":507.35,"7":195.94,"8":406.41,"9":86.42,"10":228.43,"13":404.15,"14":777.71,"15":698.72,"17":137.94,"20":146.59,"21":146.36,"22":145.7,"23":289.04,"28":144.77,"29":578.27,"30":98.59,"31":439.73},"2026-08":{"4":145.3,"5":147.24,"6":289.41,"11":343.65,"12":108.0,"14":198.83,"17":199.1,"18":39.32,"19":592.82,"20":99.53,"21":98.59,"24":36.44,"25":138.49,"26":49.7,"27":89.46,"28":99.39,"31":140.86},"2026-09":{"2":228.71,"3":99.64,"7":133.43,"9":99.47,"10":-11.88,"15":127.91,"17":64.94,"18":91.7,"22":83.92,"23":152.46,"24":28.41,"25":45.48,"28":43.17,"30":96.57}};
+/* ---- Performance breakdown modal ---- */
+const PERF=[
+ {key:'2026-06',name:'June',tag:'First month',days:DAILY['2026-06'],
+  notes:[['The month','Started 19 June, first trades closed 26 June. No losing days.'],['Backdrop','The Bank of Japan raised rates to 1.00% on 16 June.']]},
+ {key:'2026-07',name:'July',tag:'Strongest month',days:DAILY['2026-07'],
+  notes:[['The month','No losing days. Best day +$777.71 on 14 July.'],['Backdrop','The yen hit 163.73 per dollar on 30 July, near a 40-year low. Japan intervened that day, then again with the US on 31 July.'],['Through the intervention','Both days closed positive: +$98.59 on 30 July and +$439.73 on 31 July.']]},
+ {key:'2026-08',name:'August',tag:'No losing days',days:DAILY['2026-08'],
+  notes:[['The month','No losing days. Best day +$592.82 on 19 August.'],['Backdrop','Japan spent a record ¥15.4tn defending the yen from 30 July to 26 August. By 1 September the yen was back at 160.']]},
+ {key:'2026-09',name:'September',tag:'Tested twice',days:DAILY['2026-09'],
+  notes:[['3 September · yen surge','Yen and dollar pairs were paused beforehand. An unfiltered $10,000 account was liquidated in nine minutes. This account closed +$228.71 on 2 September and +$99.64 on 3 September.',['Liquidated','0.28% down']],
+         ['18 September · BoJ rate hike','Most pairs were paused for the Fed (16 September) and the BoJ (18 September). The BoJ hiked to 1.25% and the yen still weakened. This account closed +$91.70 that day.',['45.50%','12.44%']],
+         ['Why profit fell','Paused pairs open no new trades, so fewer trades close. The only losing day in four months: −$11.88 on 10 September.']]}];
+const TRADES={'2026-06':44,'2026-07':258,'2026-08':87,'2026-09':47},TDAYS={'2026-06':3,'2026-07':23,'2026-08':21,'2026-09':22};
+const usd=(v,dp=2)=>(v<0?'−':'+')+'$'+Math.abs(v).toLocaleString('en-US',{minimumFractionDigits:dp,maximumFractionDigits:dp});
+const dlg=document.getElementById('perf'),pfTabs=document.getElementById('pfTabs'),pfBody=document.getElementById('pfBody');
+const mob=()=>matchMedia('(max-width:860px)').matches;
+pfTabs.innerHTML=PERF.map((m,i)=>{const t=Object.values(m.days).reduce((a,b)=>a+b,0);return `<button type="button" class="pf-tab" role="tab" data-i="${i}"><b>${m.name}</b><span>${usd(t)}</span></button>`}).join('');
+const renderMonth=i=>{
+  const m=PERF[i],[y,mo]=m.key.split('-').map(Number),vals=Object.entries(m.days).map(([d,v])=>[+d,v]);
+  const total=vals.reduce((a,[,v])=>a+v,0),wins=vals.filter(([,v])=>v>0),best=vals.reduce((a,b)=>b[1]>a[1]?b:a),worst=vals.reduce((a,b)=>b[1]<a[1]?b:a);
+  const mx=Math.max(...vals.map(([,v])=>v)),first=(new Date(Date.UTC(y,mo-1,1)).getUTCDay()+6)%7,nd=new Date(Date.UTC(y,mo,0)).getUTCDate();
+  let cells=['MON','TUE','WED','THU','FRI','SAT','SUN'].map(d=>`<div class="dow">${mob()?d[0]:d}</div>`).join(''),k=0;
+  for(let p=0;p<first;p++)cells+=`<div class="d pad" style="--i:${k++}"></div>`;
+  for(let d=1;d<=nd;d++){const v=m.days[d];let cls='d',st=`--i:${k++}`,txt='';
+    if(v!==undefined){cls+=v<0?' loss':' win';if(d===best[0])cls+=' best';st+=`;--a:${(Math.max(0,v)/mx).toFixed(3)}`;txt=mob()?usd(v,0):usd(v)}
+    cells+=`<div class="${cls}" style="${st}"${v!==undefined?` title="${d} ${m.name}: ${usd(v)}"`:''}><span class="n">${d}</span><span class="p">${txt}</span></div>`}
+  const notes=m.notes.map(([h,t,vs])=>`<div class="pf-note"><h4>${h}</h4><p>${t}</p>${vs?`<div class="vs2"><div class="bad">Without filter<b>${vs[0]}</b></div><div class="good">With filter<b>${vs[1]}</b></div></div>`:''}</div>`).join('');
+  pfBody.innerHTML=`<div><div class="cal-head"><h3>${m.name} 2026</h3><span>${m.tag} · profit by day</span></div><div class="cal">${cells}</div>
+    <div class="cal-legend"><span><i style="background:rgba(255,176,32,.3);border:1px solid var(--accent)"></i>Profit day</span><span><i style="background:rgba(255,99,82,.12);border:1px solid rgba(255,99,82,.6)"></i>Loss day</span><span><i style="border:1px solid var(--line)"></i>No closed trades</span></div></div>
+    <div><div class="pf-stats">
+      <div class="wide"><div class="k">Month total · % of $10,000 start</div><div class="v">${usd(total)} / +${(total/100).toFixed(1)}%</div></div>
+      <div><div class="k">Trading days</div><div class="v">${TDAYS[m.key]}</div></div>
+      <div><div class="k">Trades</div><div class="v">${TRADES[m.key]}</div></div>
+      <div><div class="k">Win rate (days)</div><div class="v">${Math.round(wins.length/vals.length*100)}%</div></div>
+      <div><div class="k">Best day</div><div class="v">${usd(best[1])}</div></div>
+      <div><div class="k">Worst day</div><div class="v${worst[1]<0?' neg':''}">${usd(worst[1])}</div></div>
+      <div><div class="k">Avg day</div><div class="v">${usd(total/vals.length)}</div></div>
+    </div><div class="pf-notes">${notes}</div></div><p class="pf-foot">${document.getElementById('pfFoot').innerHTML}</p>`;
+  [...pfTabs.children].forEach((b,j)=>b.setAttribute('aria-selected',j===i));
+  pfBody.scrollTop=0;
+};
+let lastFocus=null;
+const openPerf=i=>{lastFocus=document.activeElement;renderMonth(i);dlg.showModal();document.documentElement.style.overflow='hidden';pfTabs.children[i].focus({preventScroll:true})};
+const closePerf=()=>dlg.close();
+dlg.addEventListener('close',()=>{document.documentElement.style.overflow='';lastFocus&&lastFocus.focus({preventScroll:true})});
+document.getElementById('pfClose').addEventListener('click',closePerf);
+dlg.addEventListener('click',e=>{if(e.target===dlg)closePerf()});
+pfTabs.addEventListener('click',e=>{const b=e.target.closest('.pf-tab');if(b)renderMonth(+b.dataset.i)});
+pfTabs.addEventListener('keydown',e=>{if(!['ArrowLeft','ArrowRight'].includes(e.key))return;const c=[...pfTabs.children].findIndex(b=>b.getAttribute('aria-selected')==='true');const n=(c+(e.key==='ArrowRight'?1:3))%4;renderMonth(n);pfTabs.children[n].focus()});
+document.getElementById('openPerf').addEventListener('click',()=>openPerf(1));
+document.querySelectorAll('.mbar').forEach((b,i)=>{b.addEventListener('click',()=>openPerf(i));b.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();openPerf(i)}})});
 
 /* ---- Testimonials carousel (endless, two rows, opposite directions) ---- */
 // EDIT: file names must match the images/ folder in the repo exactly
