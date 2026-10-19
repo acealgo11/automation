@@ -219,27 +219,18 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .log .ok{color:var(--accent)}
 .log .cur{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(1) infinite}
 
-/* Light (inverted) sections */
-.light{--bg:#f5f5f3;--bg-1:#ffffff;--bg-2:#ececea;--line:rgba(0,0,0,.09);--line-2:rgba(0,0,0,.2);--fg:#0b0b0b;--fg-2:#363636;--fg-3:#6a6a6a;--accent:#e09400;--accent-glow:rgba(224,148,0,.35);--ink:#a86a00;background:var(--bg);color:var(--fg)}
-section.block.light{border-bottom-color:var(--line)}
-.light .pipe-link::after{background:linear-gradient(90deg,transparent,#0b0b0b)}
-@media (max-width:980px){.light .pipe-link::after{background:linear-gradient(180deg,transparent,#0b0b0b)}}
-.light .fit li::before{color:var(--ink)}
-.light .fit .yes{background:#fff;box-shadow:0 1px 0 rgba(0,0,0,.04),0 20px 50px -30px rgba(0,0,0,.25)}
-.light .card{background:#fff}
-.light .paid .card .big{color:var(--fg)}
-.light .idx{color:var(--ink)}
-.light .not .tag{background:#0b0b0b;color:#fff;border-color:#0b0b0b}
-.light .eyebrow{color:var(--fg-2)}
-/* Light band joined across two sections */
-.light+.light{border-top:0}
-.light.join{padding-bottom:clamp(40px,6vw,70px)}
-.light.join+.light{padding-top:clamp(40px,6vw,70px)}
+/* Inverted (white) cards on the black page */
+.light{--bg:#f5f5f3;--bg-1:#f5f5f3;--bg-2:#ebebe8;--line:rgba(0,0,0,.1);--line-2:rgba(0,0,0,.18);--fg:#0b0b0b;--fg-2:#353535;--fg-3:#676767;--accent:#e09400;--accent-glow:rgba(224,148,0,.35);--ink:#a86a00;background:var(--bg)!important;color:var(--fg);border-color:transparent!important}
+.light h3,.light b,.light strong{color:var(--fg)}
+.light .idx,.light li::before{color:var(--ink)!important}
+.frame.light::before,.frame.light::after,.frame.light>.c1,.frame.light>.c2{border-color:var(--accent)}
+.cards.inv,.paid.inv{gap:14px;background:none;border:0}
+.paid .card.light .big{color:var(--fg)}
 
 /* Highlighter on key phrases: sweeps in on reveal */
 .hl{color:var(--fg);font-weight:500;background-image:linear-gradient(transparent 64%,rgba(255,176,32,.55) 64%,rgba(255,176,32,.55) 90%,transparent 90%);background-repeat:no-repeat;background-size:0% 100%;transition:background-size 1s var(--ease) .5s;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 2px}
 .in .hl,.hl.in{background-size:100% 100%}
-.light .hl{background-image:linear-gradient(transparent 55%,rgba(255,176,32,.55) 55%,rgba(255,176,32,.55) 92%,transparent 92%)}
+.light .hl,.hl-ink{background-image:linear-gradient(transparent 55%,rgba(255,176,32,.55) 55%,rgba(255,176,32,.55) 92%,transparent 92%)}
 
 /* Steps: vertical timeline accordion */
 .steps{padding:6px clamp(16px,3vw,28px)}
@@ -679,7 +670,7 @@ footer{padding:56px 0 110px}
       </div>
 
       <div class="rv d2">
-        <div class="frame">
+        <div class="frame light">
           <span class="c1"></span><span class="c2"></span>
           <div class="frame-bar"><span>Human trader vs system</span><span>Comparison</span></div>
           <div style="padding:6px 16px 10px">
@@ -702,7 +693,7 @@ footer{padding:56px 0 110px}
 </section>
 
 <!-- ===================== 02 EDUCATION ===================== -->
-<section class="block light">
+<section class="block">
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow rv">02 / The basics</div>
@@ -718,10 +709,10 @@ footer{padding:56px 0 110px}
       <div class="pipe-node"><div class="k">Output</div><h3>Order executed</h3><p>When the rules are met, the trade is placed and managed on your broker account.</p></div>
     </div>
 
-    <div class="cards">
-      <div class="card rv"><div class="idx">A.</div><h3>It follows rules, not feelings</h3><p>A losing streak doesn't make it nervous, and a winning streak doesn't make it greedy. It does exactly what it was built to do.</p></div>
-      <div class="card rv d1"><div class="idx">B.</div><h3>It watches everything at once</h3><p>A person can track a chart or two. Software can monitor every pair it trades, every second the market is open.</p></div>
-      <div class="card rv d2"><div class="idx">C.</div><h3>It never clocks off</h3><p>Forex trades around the clock from Sunday night to Friday night. The system covers the Sydney, Tokyo, London and New York sessions without a break.</p></div>
+    <div class="cards inv">
+      <div class="card light rv"><div class="idx">A.</div><h3>It follows rules, not feelings</h3><p>A losing streak doesn't make it nervous, and a winning streak doesn't make it greedy. It does exactly what it was built to do.</p></div>
+      <div class="card light rv d1"><div class="idx">B.</div><h3>It watches everything at once</h3><p>A person can track a chart or two. Software can monitor every pair it trades, every second the market is open.</p></div>
+      <div class="card light rv d2"><div class="idx">C.</div><h3>It never clocks off</h3><p>Forex trades around the clock from Sunday night to Friday night. The system covers the Sydney, Tokyo, London and New York sessions without a break.</p></div>
     </div>
 
     <div class="not rv">
@@ -904,14 +895,14 @@ footer{padding:56px 0 110px}
 <div class="lb" id="lb" role="dialog" aria-label="Testimonial"><span class="x">Close ✕</span><img alt=""></div>
 
 <!-- ===================== 07 FIT ===================== -->
-<section class="block light join">
+<section class="block">
   <div class="wrap">
     <div class="sec-head center">
       <div class="eyebrow rv">07 / Is it for you</div>
       <h2 class="rv d1">Built for some people. <span class="dim">Not for everyone.</span></h2>
     </div>
     <div class="fit">
-      <div class="frame yes rv"><span class="c1"></span><span class="c2"></span>
+      <div class="frame yes light rv"><span class="c1"></span><span class="c2"></span>
         <h3><i class="dot"></i>It's a fit if you…</h3>
         <ul>
           <li>Want exposure to the forex market without staring at charts</li>
@@ -936,17 +927,17 @@ footer{padding:56px 0 110px}
 </section>
 
 <!-- ===================== 08 TRANSPARENCY ===================== -->
-<section class="block light">
+<section class="block">
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow rv">08 / Pricing</div>
       <h2 class="rv d1">Simple pricing. <span class="dim">Your money stays yours.</span></h2>
     </div>
     <!-- EDIT: confirm pricing model wording -->
-    <div class="paid">
-      <div class="card rv"><div class="idx">01 · Licence</div><div class="big">Fixed</div><h3>One clear fee</h3><p>You pay a fixed fee to license the software. <span class="hl">No share of your profits, no surprise charges.</span> We'll take you through pricing on the call.</p></div>
-      <div class="card rv d1"><div class="idx">02 · Control</div><div class="big">Anytime</div><h3>Disconnect when you like</h3><p>No lock-in. You can switch the software off on your account whenever you choose.</p></div>
-      <div class="card rv d2"><div class="idx">03 · Your funds</div><div class="big">£0</div><h3>Held by us</h3><p>Your money sits in your own broker account, in your name. We can place trades through the software. <span class="hl">We can't withdraw a penny.</span></p></div>
+    <div class="paid inv">
+      <div class="card light rv"><div class="idx">01 · Licence</div><div class="big">Fixed</div><h3>One clear fee</h3><p>You pay a fixed fee to license the software. <span class="hl">No share of your profits, no surprise charges.</span> We'll take you through pricing on the call.</p></div>
+      <div class="card light rv d1"><div class="idx">02 · Control</div><div class="big">Anytime</div><h3>Disconnect when you like</h3><p>No lock-in. You can switch the software off on your account whenever you choose.</p></div>
+      <div class="card light rv d2"><div class="idx">03 · Your funds</div><div class="big">£0</div><h3>Held by us</h3><p>Your money sits in your own broker account, in your name. We can place trades through the software. <span class="hl">We can't withdraw a penny.</span></p></div>
     </div>
   </div>
 </section>
