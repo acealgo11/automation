@@ -91,8 +91,11 @@ p{margin:0;color:var(--fg-2)}
 .logo svg{width:22px;height:22px}
 .logo .sig{fill:var(--accent);animation:blink 2.4s steps(1) infinite}
 @keyframes blink{0%,70%{opacity:1}71%,100%{opacity:.15}}
-.logo .word{font-weight:500;font-size:14px;letter-spacing:.24em;color:var(--fg-2)}
-.logo .word b{font-weight:600;color:var(--fg)}
+.logo{gap:0}
+.logo svg{margin-right:1px}
+.logo .ce{font-family:var(--mono);font-size:11px;line-height:1;letter-spacing:.02em;color:var(--fg-3);align-self:flex-end;margin-bottom:2px;transition:color .3s}
+.logo:hover .ce{color:var(--accent)}
+.logo .word{font-weight:500;font-size:14px;letter-spacing:.24em;color:var(--fg);margin-left:14px;padding-left:14px;border-left:1px solid var(--line-2);line-height:22px}
 .status{font-family:var(--mono);font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-2);display:flex;align-items:center;gap:14px}
 .status .sep{width:1px;height:12px;background:var(--line-2)}
 
@@ -533,7 +536,7 @@ footer{padding:56px 0 110px}
         <polygon points="10.2,2 13.8,2 22.5,22 18.9,22 12,6.6 5.1,22 1.5,22"/>
         <rect class="sig" x="10.6" y="14.1" width="2.8" height="2.8"/>
       </svg>
-      <span class="word"><b>ACE</b> AUTOMATION</span>
+      <span class="ce" aria-hidden="true">ce</span><span class="word">AUTOMATION</span>
     </a>
     <div class="status" aria-live="polite">
       <span class="live" id="mktwrap" style="display:inline-flex;align-items:center;gap:10px"><i class="dot"></i><span id="mkt">FX MARKET</span></span>
@@ -957,7 +960,7 @@ footer{padding:56px 0 110px}
     <div class="foot-top">
       <a href="#top" class="logo" aria-label="Ace Automation">
         <svg viewBox="0 0 24 24" fill="#fafafa" aria-hidden="true"><polygon points="10.2,2 13.8,2 22.5,22 18.9,22 12,6.6 5.1,22 1.5,22"/><rect x="10.6" y="14.1" width="2.8" height="2.8" fill="#ffb020"/></svg>
-        <span class="word"><b>ACE</b> AUTOMATION</span>
+        <span class="ce" aria-hidden="true">ce</span><span class="word">AUTOMATION</span>
       </a>
       <!-- EDIT: link to your legal pages -->
       <nav class="foot-links"><a href="#">Risk disclosure</a><a href="#">Terms</a><a href="#">Privacy</a></nav>

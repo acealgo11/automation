@@ -1,7 +1,8 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 24" role="img" aria-label="Ace Automation">
-  <!-- Mark: a sharp chevron "A"; the amber square is the crossbar / live signal -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 196 24" role="img" aria-label="Ace Automation">
+  <!-- Mark: a sharp chevron "A" with the amber signal as its crossbar; a quiet mono "ce" completes "Ace" -->
   <polygon fill="#fafafa" points="10.2,2 13.8,2 22.5,22 18.9,22 12,6.6 5.1,22 1.5,22"/>
   <rect fill="#ffb020" x="10.6" y="14.1" width="2.8" height="2.8"/>
-  <!-- Wordmark -->
-  <text x="34" y="17" font-family="Geist, 'Helvetica Neue', Arial, sans-serif" font-size="14" letter-spacing="3.4"><tspan fill="#fafafa" font-weight="600">ACE</tspan><tspan fill="#a3a3a3" font-weight="500"> AUTOMATION</tspan></text>
+  <text x="23.5" y="22" font-family="'Geist Mono', ui-monospace, Menlo, monospace" font-size="11" fill="#6b6b6b">ce</text>
+  <line x1="52" y1="1" x2="52" y2="23" stroke="#ffffff" stroke-opacity=".16"/>
+  <text x="66" y="17" font-family="Geist, 'Helvetica Neue', Arial, sans-serif" font-size="14" font-weight="500" letter-spacing="3.4" fill="#fafafa">AUTOMATION</text>
 </svg>
