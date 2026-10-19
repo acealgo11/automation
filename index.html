@@ -40,7 +40,8 @@
 }
 *,*::before,*::after{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--sans);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased;overflow-x:hidden;overflow-x:clip}
+html{overflow-x:hidden;overflow-x:clip}
 img,svg{display:block}
 a{color:inherit;text-decoration:none}
 ::selection{background:var(--accent);color:#000}
@@ -218,27 +219,36 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .log .ok{color:var(--accent)}
 .log .cur{display:inline-block;width:7px;height:13px;background:var(--accent);vertical-align:-2px;animation:blink 1s steps(1) infinite}
 
-/* Steps / tabs */
-.tabs{display:grid;grid-template-columns:280px 1fr;border:1px solid var(--line-2)}
-.tab-list{border-right:1px solid var(--line);display:flex;flex-direction:column}
-.tab-btn{appearance:none;background:none;border:0;border-bottom:1px solid var(--line);color:var(--fg-3);font:inherit;text-align:left;padding:22px 22px;cursor:pointer;display:flex;gap:16px;align-items:center;position:relative;transition:color .2s,background .2s}
-.tab-btn:last-child{border-bottom:0}
-.tab-btn .num{font-family:var(--mono);font-size:12px;letter-spacing:.1em}
-.tab-btn .nm{font-size:17px;font-weight:500;letter-spacing:-.01em}
-.tab-btn[aria-selected="true"]{color:var(--fg);background:var(--bg-2)}
-.tab-btn[aria-selected="true"] .num{color:var(--accent)}
-.tab-btn .prog{position:absolute;left:0;bottom:-1px;height:1px;background:var(--accent);width:0}
-.tab-btn[aria-selected="true"] .prog{animation:prog 6s linear forwards}
-.tabs.manual .prog{display:none}
-@keyframes prog{to{width:100%}}
-.tab-panel{padding:clamp(26px,4vw,48px);display:none}
-.tab-panel.on{display:block;animation:fadeup .5s var(--ease)}
-.tab-panel h3{font-size:clamp(24px,2.6vw,32px);letter-spacing:-.02em;margin-bottom:14px}
-.tab-panel p{max-width:560px}
-.specs{display:grid;grid-template-columns:repeat(3,1fr);margin-top:34px;border-top:1px solid var(--line)}
-.specs div{padding:18px 0 0}
-.specs .k{font-family:var(--mono);font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--fg-3)}
-.specs .v{font-size:20px;font-weight:500;margin-top:6px;letter-spacing:-.01em}
+/* Steps: vertical timeline accordion */
+.steps{padding:6px clamp(16px,3vw,28px)}
+.step{position:relative;padding-left:58px}
+.step+.step::before{content:"";position:absolute;left:58px;right:0;top:0;height:1px;background:var(--line)}
+.step .node{position:absolute;left:0;top:16px;width:38px;height:38px;display:grid;place-items:center;border:1px solid var(--line-2);background:var(--bg);font-family:var(--mono);font-size:12px;letter-spacing:.06em;color:var(--fg-3);z-index:1;transition:color .3s,border-color .3s,background .3s,box-shadow .3s}
+.step.done .node{border-color:rgba(255,176,32,.55);color:var(--accent)}
+.step.on .node{border-color:var(--accent);color:#000;background:var(--accent);box-shadow:0 0 0 4px rgba(255,176,32,.12),0 0 22px rgba(255,176,32,.35)}
+.step .seg{position:absolute;left:19px;top:54px;bottom:-16px;width:1px;background:var(--line-2);overflow:hidden}
+.step:last-child .seg{display:none}
+.step .seg i{position:absolute;left:0;top:0;width:1px;height:0;background:var(--accent);box-shadow:0 0 8px var(--accent-glow)}
+.step.done .seg i{height:100%;transition:height .5s var(--ease)}
+.steps.auto .step.on .seg i{animation:segfill 6s linear forwards}
+@keyframes segfill{to{height:100%}}
+.step-head{appearance:none;width:100%;background:none;border:0;color:inherit;font:inherit;text-align:left;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:18px 0;min-height:70px}
+.step-head b{display:block;font-weight:500;font-size:18px;letter-spacing:-.01em;color:var(--fg-2);transition:color .3s}
+.step-head em{display:block;font-style:normal;font-family:var(--mono);font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--fg-3);margin-top:4px}
+.step.on .step-head b,.step-head:hover b{color:var(--fg)}
+.step-head .pm{font-family:var(--mono);color:var(--fg-3);flex:none;transition:transform .3s var(--ease),color .3s}
+.step.on .step-head .pm{transform:rotate(45deg);color:var(--accent)}
+.step-body{display:grid;grid-template-rows:0fr;transition:grid-template-rows .5s var(--ease)}
+.step.on .step-body{grid-template-rows:1fr}
+.step-in{overflow:hidden;min-height:0}
+.step-grid{display:grid;grid-template-columns:1.25fr 1fr;gap:20px 36px;align-items:start;padding:0 0 22px;opacity:0;transform:translateY(-6px);transition:opacity .4s,transform .4s var(--ease)}
+.step.on .step-grid{opacity:1;transform:none;transition-delay:.12s}
+.step-grid p{font-size:15.5px;max-width:520px}
+.specs{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));border:1px solid var(--line)}
+.specs>div{padding:12px 14px;border-left:1px solid var(--line);min-width:0}
+.specs>div:first-child{border-left:0}
+.specs .k{font-family:var(--mono);font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--fg-3)}
+.specs .v{font-size:17px;font-weight:500;margin-top:4px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 @keyframes fadeup{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:none}}
 
 /* Results */
@@ -453,10 +463,7 @@ footer{padding:56px 0 110px}
   .pipe-link::after{width:1px;height:30%;left:0;top:-30%;background:linear-gradient(180deg,transparent,#fff);animation:flowv 1.8s linear infinite}
   .not{grid-template-columns:1fr}
   .not ul{grid-template-columns:1fr}
-  .tabs{grid-template-columns:1fr}
-  .tab-list{flex-direction:row;overflow-x:auto;border-right:0;border-bottom:1px solid var(--line)}
-  .tab-btn{border-bottom:0;border-right:1px solid var(--line);flex:1 0 auto;padding:16px 18px}
-  .tab-btn .nm{font-size:15px}
+  .step-grid{grid-template-columns:1fr}
   .fit{grid-template-columns:1fr}
   .trust{grid-template-columns:1fr 1fr}
   .trust div:nth-child(3){border-left:0}
@@ -485,7 +492,18 @@ footer{padding:56px 0 110px}
   .stats{grid-template-columns:1fr}
   .stat{border-left:0;border-top:1px solid var(--line)}
   .stat:first-child{border-top:0}
-  .specs{grid-template-columns:1fr 1fr;gap:4px 16px}
+  .steps{padding:2px 14px}
+  .step{padding-left:48px}
+  .step+.step::before{left:48px}
+  .step .node{width:32px;height:32px;top:15px;font-size:11px}
+  .step .seg{left:16px;top:47px}
+  .step-head{padding:15px 0;min-height:62px}
+  .step-head b{font-size:16px}
+  .step-head em{font-size:10px;letter-spacing:.08em}
+  .step-grid p{font-size:14.5px}
+  .specs>div{padding:10px 10px}
+  .specs .k{font-size:9px;letter-spacing:.08em}
+  .specs .v{font-size:14.5px}
   .vs{font-size:14px}
   .vs th,.vs td{padding:13px 8px}
   .sticky{display:block}
@@ -741,36 +759,27 @@ footer{padding:56px 0 110px}
       <h2 class="rv d1">From first call to fully automated <span class="dim">in four steps.</span></h2>
     </div>
 
-    <div class="tabs rv" id="tabs">
-      <div class="tab-list" role="tablist">
-        <button class="tab-btn" role="tab" aria-selected="true" data-i="0"><span class="num">01</span><span class="nm">Book a call</span><i class="prog"></i></button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-i="1"><span class="num">02</span><span class="nm">Open your account</span><i class="prog"></i></button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-i="2"><span class="num">03</span><span class="nm">We connect it</span><i class="prog"></i></button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-i="3"><span class="num">04</span><span class="nm">Watch it run</span><i class="prog"></i></button>
+    <div class="steps frame rv" id="steps">
+      <span class="c1"></span><span class="c2"></span>
+      <div class="step on" data-i="0">
+        <span class="node">01</span><span class="seg"><i></i></span>
+        <button type="button" class="step-head" aria-expanded="true" aria-controls="step-b0"><span><b>Book a call</b><em>~20 min · Free · No obligation</em></span><span class="pm">+</span></button>
+        <div class="step-body" id="step-b0"><div class="step-in"><div class="step-grid"><p>A short call to understand your goals and experience, answer your questions, and confirm whether Ace Automation is a good fit. If it's not, we'll tell you.</p><div class="specs"><div><div class="k">Time</div><div class="v">~20 min</div></div><div><div class="k">Cost</div><div class="v">Free</div></div><div><div class="k">Obligation</div><div class="v">None</div></div></div></div></div></div>
       </div>
-      <div>
-        <div class="tab-panel on" role="tabpanel">
-          <h3>Talk to the team.</h3>
-          <p>A short call to understand your goals and experience, answer your questions, and confirm whether Ace Automation is a good fit. If it's not, we'll tell you.</p>
-          <div class="specs"><div><div class="k">Time</div><div class="v">~20 min</div></div><div><div class="k">Cost</div><div class="v">Free</div></div><div><div class="k">Obligation</div><div class="v">None</div></div></div>
-        </div>
-        <div class="tab-panel" role="tabpanel">
-          <h3>Open a live account in your name.</h3>
-          <p>You open and fund an account with our partner broker. The money stays in your account at all times. We never hold it, and we can't withdraw it.</p>
-          <!-- EDIT: confirm broker + minimum -->
-          <div class="specs"><div><div class="k">Broker</div><div class="v">Vantage</div></div><div><div class="k">Min. deposit</div><div class="v">£X,XXX</div></div><div><div class="k">Time</div><div class="v">~10 min</div></div></div>
-        </div>
-        <div class="tab-panel" role="tabpanel">
-          <h3>We plug the system in.</h3>
-          <p>Share your trading platform login and our team connects the software to your account through a secure connection. There's nothing for you to install.</p>
-          <!-- EDIT: confirm platform + go-live time -->
-          <div class="specs"><div><div class="k">Platform</div><div class="v">MT4 / MT5</div></div><div><div class="k">Go-live</div><div class="v">XX–XX hrs</div></div><div><div class="k">Install</div><div class="v">Nothing</div></div></div>
-        </div>
-        <div class="tab-panel" role="tabpanel">
-          <h3>See every trade, as it happens.</h3>
-          <p>The system trades automatically. You can log in to your trading app at any time and see every open position, every closed trade and your full account history.</p>
-          <div class="specs"><div><div class="k">Hours</div><div class="v">24 / 5</div></div><div><div class="k">Visibility</div><div class="v">Real-time</div></div><div><div class="k">Control</div><div class="v">Yours</div></div></div>
-        </div>
+      <div class="step" data-i="1">
+        <span class="node">02</span><span class="seg"><i></i></span>
+        <button type="button" class="step-head" aria-expanded="false" aria-controls="step-b1"><span><b>Open your account</b><em>Your name · Your funds</em></span><span class="pm">+</span></button>
+        <div class="step-body" id="step-b1"><div class="step-in"><div class="step-grid"><p>You open and fund an account with our partner broker. The money stays in your account at all times. We never hold it, and we can't withdraw it.</p><!-- EDIT: confirm broker + minimum --><div class="specs"><div><div class="k">Broker</div><div class="v">Vantage</div></div><div><div class="k">Minimum</div><div class="v">£X,XXX</div></div><div><div class="k">Time</div><div class="v">~10 min</div></div></div></div></div></div>
+      </div>
+      <div class="step" data-i="2">
+        <span class="node">03</span><span class="seg"><i></i></span>
+        <button type="button" class="step-head" aria-expanded="false" aria-controls="step-b2"><span><b>We connect it</b><em>Nothing to install</em></span><span class="pm">+</span></button>
+        <div class="step-body" id="step-b2"><div class="step-in"><div class="step-grid"><p>Share your trading platform login and our team connects the software to your account through a secure connection. There's nothing for you to install.</p><!-- EDIT: confirm platform + go-live time --><div class="specs"><div><div class="k">Platform</div><div class="v">MT4 / MT5</div></div><div><div class="k">Go-live</div><div class="v">XX–XX hrs</div></div><div><div class="k">Install</div><div class="v">Nothing</div></div></div></div></div></div>
+      </div>
+      <div class="step" data-i="3">
+        <span class="node">04</span><span class="seg"><i></i></span>
+        <button type="button" class="step-head" aria-expanded="false" aria-controls="step-b3"><span><b>Watch it run</b><em>24/5 · Real-time visibility</em></span><span class="pm">+</span></button>
+        <div class="step-body" id="step-b3"><div class="step-in"><div class="step-grid"><p>The system trades automatically. Log in to your trading app any time to see every open position, every closed trade and your full account history.</p><div class="specs"><div><div class="k">Hours</div><div class="v">24 / 5</div></div><div><div class="k">Visibility</div><div class="v">Real-time</div></div><div><div class="k">Control</div><div class="v">Yours</div></div></div></div></div></div>
       </div>
     </div>
   </div>
@@ -1209,13 +1218,14 @@ tcar.addEventListener('click',e=>{if(moved){moved=false;return}const im=e.target
 lb.addEventListener('click',()=>lb.classList.remove('on'));
 addEventListener('keydown',e=>{if(e.key==='Escape')lb.classList.remove('on')});
 
-/* ---- Setup tabs (auto-advance until clicked) ---- */
-const tabs=document.getElementById('tabs'),btns=[...tabs.querySelectorAll('.tab-btn')],panels=[...tabs.querySelectorAll('.tab-panel')];
-let cur=0,timer=null;
-const show=i=>{cur=i;btns.forEach((b,j)=>b.setAttribute('aria-selected',j===i));panels.forEach((p,j)=>p.classList.toggle('on',j===i))};
-const auto=()=>{clearInterval(timer);timer=setInterval(()=>show((cur+1)%btns.length),6000)};
-btns.forEach(b=>b.addEventListener('click',()=>{clearInterval(timer);tabs.classList.add('manual');show(+b.dataset.i)}));
-if(!RM)new IntersectionObserver(([e])=>{if(e.isIntersecting&&!tabs.classList.contains('manual')){show(cur);auto()}else clearInterval(timer)},{threshold:.4}).observe(tabs);
+/* ---- Setup steps: vertical timeline (auto-advance until tapped) ---- */
+const stepsEl=document.getElementById('steps'),stepEls=[...stepsEl.querySelectorAll('.step')];
+let cur=0,timer=null,manual=false;
+const show=i=>{cur=i;stepEls.forEach((s,j)=>{s.classList.toggle('on',j===i);s.classList.toggle('done',j<i);s.querySelector('.step-head').setAttribute('aria-expanded',j===i);
+  const seg=s.querySelector('.seg i');seg.style.animation='none';void seg.offsetWidth;seg.style.animation=''})};
+const auto=()=>{clearInterval(timer);stepsEl.classList.add('auto');timer=setInterval(()=>show((cur+1)%stepEls.length),6000)};
+stepEls.forEach((s,i)=>s.querySelector('.step-head').addEventListener('click',()=>{manual=true;clearInterval(timer);stepsEl.classList.remove('auto');show(i)}));
+if(!RM)new IntersectionObserver(([e])=>{if(e.isIntersecting&&!manual){show(cur);auto()}else{clearInterval(timer);stepsEl.classList.remove('auto')}},{threshold:.4}).observe(stepsEl);
 
 /* ---- Sticky mobile CTA: show once past the form, hide when form/final CTA visible ---- */
 const sticky=document.getElementById('sticky'),apply=document.getElementById('apply'),fin=document.querySelector('.final');
