@@ -232,6 +232,23 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .light .mbar .col{background:linear-gradient(180deg,#ffa800,rgba(255,168,0,.45));box-shadow:none}
 .light .mbars{border-bottom-color:var(--line-2)}
 .rstat.light .v.counting{color:var(--ink)}
+/* Breakdown pop-up in white */
+dialog.perf.light{box-shadow:0 30px 80px -20px rgba(0,0,0,.6)}
+.light .cal .d{background:#fff}
+.light .cal .d.pad{background:none}
+.light .cal .d.win{border-color:rgba(224,148,0,calc(.3 + var(--a) * .6));background:rgba(255,176,32,calc(.08 + var(--a) * .42))}
+.light .cal .d.win .p{color:#3d2700;font-weight:500}
+.light .cal .d.win .n{color:#7a5a20}
+.light .cal .d.loss{border-color:rgba(192,57,43,.55);background:rgba(192,57,43,.08)}
+.light .cal .d.loss .p,.light .pf-stats .v.neg{color:#b3261e}
+.light .cal .d.best{box-shadow:0 0 0 2px var(--accent),0 6px 18px rgba(224,148,0,.3)}
+.light .pf-stats{background:#fff}
+.light .pf-stats .wide .v{color:var(--ink)}
+.light .pf-tab[aria-selected="true"]{background:#fff}
+.light .pf-tab[aria-selected="true"] span{color:var(--ink)}
+.light .pf-note{background:#fff}
+.light .pf-note .vs2 .good b{color:var(--ink)}
+.light .pf-x:hover{color:var(--ink);border-color:var(--ink)}
 
 /* Highlighter on key phrases: sweeps in on reveal */
 .hl{color:var(--fg);font-weight:500;background-image:linear-gradient(transparent 64%,rgba(255,176,32,.55) 64%,rgba(255,176,32,.55) 90%,transparent 90%);background-repeat:no-repeat;background-size:0% 100%;transition:background-size 1s var(--ease) .5s;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 2px}
@@ -998,7 +1015,7 @@ footer{padding:56px 0 110px}
   </div>
 </footer>
 
-<dialog class="perf" id="perf" aria-labelledby="pfTitle">
+<dialog class="perf light" id="perf" aria-labelledby="pfTitle">
   <div class="pf-top"><span class="live" id="pfTitle"><i class="dot"></i>Daily breakdown<span class="hide-m">&nbsp;· Jun – Sep 2026</span></span><button type="button" class="pf-x" id="pfClose" aria-label="Close">Close ✕</button></div>
   <div class="pf-tabs" role="tablist" id="pfTabs"></div>
   <div class="pf-body" id="pfBody"></div>
