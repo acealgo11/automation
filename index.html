@@ -241,6 +241,9 @@ section.block{padding:clamp(80px,11vw,140px) 0;border-bottom:1px solid var(--lin
 .frame.light::before,.frame.light::after,.frame.light>.c1,.frame.light>.c2{border-color:var(--accent)}
 .cards.inv,.paid.inv{gap:14px;background:none;border:0}
 .paid .card.light .big{color:var(--fg)}
+.paid .big{white-space:nowrap}
+.win{margin-top:28px;font-size:clamp(18px,2vw,22px);font-weight:500;letter-spacing:-.01em;color:var(--fg)}
+.win span{color:var(--fg-3)}
 .light .tbar .track{background:rgba(0,0,0,.07)}
 .light .tbar.off .fill{background:repeating-linear-gradient(135deg,rgba(0,0,0,.55) 0 6px,rgba(0,0,0,.3) 6px 12px)}
 .light .tbar.on .val,.light .test-top em{color:var(--ink)}
@@ -650,6 +653,7 @@ footer{padding:56px 0 110px}
         <span>Runs on your own broker account</span>
         <span>Your funds never leave your control</span>
         <span>No trading experience needed</span>
+        <span>£0 upfront · pay only from profit</span>
       </div>
     </div>
   </div>
@@ -661,7 +665,7 @@ footer{padding:56px 0 110px}
     <div class="apply-head rv">
       <div class="step-tag"><i class="dot"></i> Next step</div>
       <h2>Get started on WhatsApp</h2>
-      <p>Send us a quick message and we'll reply with the steps to get set up, answer any questions, and check Ace Automation is the right fit. No obligation, no pressure.</p>
+      <p>Send us a quick message and we'll reply with the steps to get set up, answer any questions, and check Ace Automation is the right fit. Nothing to pay upfront, no obligation.</p>
     </div>
 
     <div class="form-frame frame rv d1">
@@ -682,7 +686,7 @@ footer{padding:56px 0 110px}
     </div>
 
     <div class="trust rv d2">
-      <div><svg viewBox="0 0 16 16" fill="none" stroke="#fafafa" stroke-width="1.2"><rect x="3" y="7" width="10" height="7"/><path d="M5 7V5a3 3 0 0 1 6 0v2"/></svg>No obligation</div>
+      <div><svg viewBox="0 0 16 16" fill="none" stroke="#fafafa" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M8 4.5v7M10 6H7a1.25 1.25 0 0 0 0 2.5h2a1.25 1.25 0 0 1 0 2.5H6"/></svg>£0 upfront</div>
       <div><svg viewBox="0 0 16 16" fill="none" stroke="#fafafa" stroke-width="1.2"><path d="M8 1.5 2.5 4v4c0 3.2 2.3 5.6 5.5 6.5 3.2-.9 5.5-3.3 5.5-6.5V4z"/></svg>We never touch your funds</div>
       <div><svg viewBox="0 0 16 16" fill="none" stroke="#fafafa" stroke-width="1.2"><circle cx="8" cy="8" r="6"/><path d="M5 8h6"/></svg>Disconnect anytime</div>
       <div><svg viewBox="0 0 16 16" fill="none" stroke="#fafafa" stroke-width="1.2"><path d="M3 2h7l3 3v9H3z"/><path d="M5.5 8h5M5.5 11h5"/></svg>Full risk disclosure</div>
@@ -973,19 +977,21 @@ footer{padding:56px 0 110px}
   </div>
 </section>
 
-<!-- ===================== 08 TRANSPARENCY ===================== -->
+<!-- ===================== 08 PRICING ===================== -->
 <section class="block">
   <div class="wrap">
     <div class="sec-head">
       <div class="eyebrow rv">08 / Pricing</div>
-      <h2 class="rv d1">Simple pricing. <span class="dim">Your money stays yours.</span></h2>
+      <h2 class="rv d1">You don't pay a penny <span class="dim">until you're in profit.</span></h2>
+      <p class="lede rv d2">Most trading products take your money upfront and hope you stick around. We'd rather prove it first. So there's nothing to pay to get started, and <span class="hl">you only pay us once the system has made you money.</span></p>
     </div>
-    <!-- EDIT: confirm pricing model wording -->
+    <!-- EDIT: add the exact fee structure (e.g. % of profit, high-water mark) once confirmed -->
     <div class="paid inv">
-      <div class="card light rv"><div class="idx">01 · Licence</div><div class="big">Fixed</div><h3>One clear fee</h3><p>You pay a fixed fee to license the software. <span class="hl">No share of your profits, no surprise charges.</span> Message us on WhatsApp and we'll take you through pricing.</p></div>
-      <div class="card light rv d1"><div class="idx">02 · Control</div><div class="big">Anytime</div><h3>Disconnect when you like</h3><p>No lock-in. You can switch the software off on your account whenever you choose.</p></div>
-      <div class="card light rv d2"><div class="idx">03 · Your funds</div><div class="big">£0</div><h3>Held by us</h3><p>Your money sits in your own broker account, in your name. We can place trades through the software. <span class="hl">We can't withdraw a penny.</span></p></div>
+      <div class="card light rv"><div class="idx">01 · To start</div><div class="big">£0</div><h3>Nothing upfront</h3><p>No setup fee. No licence fee. No subscription. Getting connected costs you nothing.</p></div>
+      <div class="card light rv d1"><div class="idx">02 · Our fee</div><div class="big">Profit first</div><h3>Paid from results, not promises</h3><p>You only pay once you're in profit. <span class="hl">No profit, no fee.</span> That's how confident we are in what the system does.</p></div>
+      <div class="card light rv d2"><div class="idx">03 · Your money</div><div class="big">100%</div><h3>Yours, in your name</h3><p>Your funds stay in your own broker account and you can disconnect any time. <span class="hl">We can't withdraw a penny.</span></p></div>
     </div>
+    <p class="win rv">If it works, you pay. If it doesn't, you don't. <span>That's the whole deal.</span></p>
   </div>
 </section>
 
@@ -998,6 +1004,7 @@ footer{padding:56px 0 110px}
     </div>
     <div class="faq rv">
       <details><summary>Is this legit, or is it a scam?<span class="pm">+</span></summary><div class="ans">Fair question in this industry. Your money never comes to us. It stays in your own regulated broker account, in your name, and you can withdraw it at any time. We publish our tracked performance month by month, including the drawdowns and the one losing day, not just the wins.</div></details>
+      <details><summary>How much does it cost?<span class="pm">+</span></summary><div class="ans"><span class="hl in">Nothing upfront.</span> There's no setup fee, licence fee or subscription. We only charge once the system has made you a profit, so if it doesn't make you money, you don't pay us. We'll explain exactly how the fee works on WhatsApp before you start.</div></details>
       <details><summary>Can I lose money?<span class="pm">+</span></summary><div class="ans">Yes. Forex trading carries real risk, losing periods are a normal part of how any system trades, and past performance does not guarantee future results. Only use money you can afford to lose.</div></details>
       <details><summary>Do I need any trading experience?<span class="pm">+</span></summary><div class="ans">No. The software handles analysis, entries, exits and risk management. You don't need to read charts or place trades. We'll walk you through setup step by step on WhatsApp.</div></details>
       <details><summary>Who holds my money?<span class="pm">+</span></summary><div class="ans"><span class="hl in">You do.</span> Funds stay in your own account with the broker. The software can place trades on that account but has no ability to withdraw or move money.</div></details>
@@ -1016,7 +1023,7 @@ footer{padding:56px 0 110px}
   <div class="wrap">
     <div class="eyebrow rv" style="margin-bottom:26px">System ready</div>
     <h2 class="rv d1">Stop watching charts. <br><span class="dim">Start running a system.</span></h2>
-    <p class="rv d2">Message us on WhatsApp and we'll send you the steps to get set up.</p>
+    <p class="rv d2">Message us on WhatsApp and we'll send you the steps to get set up. Nothing to pay until you're in profit.</p>
     <a href="https://wa.me/447446978735?text=Hi%2C%20I%27m%20interested%20in%20Ace%20Automation.%20Please%20can%20you%20send%20me%20the%20steps%20to%20get%20set%20up%3F" target="_blank" rel="noopener" data-wa class="btn btn-primary rv d3"><svg class="wa-ic" viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M12.04 2C6.58 2 2.13 6.45 2.13 11.91c0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38a9.9 9.9 0 0 0 4.74 1.21c5.46 0 9.91-4.45 9.91-9.91S17.5 2 12.04 2Zm0 18.15c-1.48 0-2.93-.4-4.2-1.15l-.3-.18-3.12.82.83-3.04-.2-.31a8.2 8.2 0 0 1-1.26-4.38c0-4.54 3.7-8.24 8.25-8.24 4.54 0 8.24 3.7 8.24 8.24 0 4.55-3.7 8.24-8.24 8.24Zm4.52-6.16c-.25-.12-1.47-.72-1.69-.81-.23-.08-.39-.12-.56.13-.17.24-.64.8-.78.97-.14.17-.29.19-.54.06-.25-.12-1.04-.38-1.99-1.23-.74-.66-1.23-1.47-1.38-1.72-.14-.25-.02-.38.11-.51.11-.11.25-.29.37-.43.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.43-.06-.12-.56-1.34-.76-1.84-.2-.48-.41-.42-.56-.43h-.48c-.17 0-.43.06-.66.31-.23.25-.86.85-.86 2.07 0 1.22.89 2.4 1.01 2.56.12.17 1.75 2.67 4.23 3.74.59.26 1.05.41 1.41.52.59.19 1.13.16 1.56.1.48-.07 1.47-.6 1.67-1.18.21-.58.21-1.07.14-1.18-.06-.1-.22-.16-.47-.28Z"/></svg>Message us on WhatsApp <span class="arr">→</span></a>
   </div>
 </section>
